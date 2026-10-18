@@ -1,0 +1,821 @@
+{
+ "products": [
+  {
+   "id": "c1",
+   "name": "Gentle Foam Cleanser",
+   "brand": "Lumea",
+   "step": "cleanser",
+   "price": 2800,
+   "size": "150 ml",
+   "inStock": true,
+   "skinTypes": [
+    "oily",
+    "combination",
+    "normal"
+   ],
+   "concerns": {
+    "acne": 1,
+    "pores": 1
+   },
+   "keyIngredients": [
+    "Amino acids"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf A1",
+   "benefit": {
+    "en": "Lifts oil and dirt without leaving skin tight."
+   }
+  },
+  {
+   "id": "c2",
+   "name": "Creamy Milk Cleanser",
+   "brand": "Verdant",
+   "step": "cleanser",
+   "price": 3200,
+   "size": "150 ml",
+   "inStock": true,
+   "skinTypes": [
+    "dry",
+    "sensitive"
+   ],
+   "concerns": {
+    "dryness": 2,
+    "redness": 1
+   },
+   "keyIngredients": [
+    "Oat extract",
+    "Ceramides"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf A1",
+   "benefit": {
+    "en": "Cleanses softly and keeps moisture in."
+   }
+  },
+  {
+   "id": "c3",
+   "name": "Clear Gel Cleanser 2% BHA",
+   "brand": "Kiri",
+   "step": "cleanser",
+   "price": 3600,
+   "size": "120 ml",
+   "inStock": true,
+   "skinTypes": [
+    "oily",
+    "combination"
+   ],
+   "concerns": {
+    "acne": 3,
+    "pores": 3
+   },
+   "keyIngredients": [
+    "Salicylic acid"
+   ],
+   "avoidSkinTypes": [
+    "dry",
+    "sensitive"
+   ],
+   "note": {
+    "en": "Can feel drying. Use once a day to start."
+   },
+   "shelf": "Shelf A2",
+   "benefit": {
+    "en": "Helps unclog pores and calm breakouts."
+   }
+  },
+  {
+   "id": "c4",
+   "name": "Micellar Cleansing Water",
+   "brand": "Lumea",
+   "step": "cleanser",
+   "price": 2900,
+   "size": "250 ml",
+   "inStock": true,
+   "skinTypes": [
+    "all"
+   ],
+   "concerns": {
+    "redness": 1
+   },
+   "keyIngredients": [
+    "Glycerin"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf A2",
+   "benefit": {
+    "en": "A quick, gentle first cleanse for any skin."
+   }
+  },
+  {
+   "id": "c5",
+   "name": "Cleansing Oil",
+   "brand": "Verdant",
+   "step": "cleanser",
+   "price": 4200,
+   "size": "150 ml",
+   "inStock": false,
+   "skinTypes": [
+    "all"
+   ],
+   "concerns": {
+    "dullness": 1
+   },
+   "keyIngredients": [
+    "Plant oils"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf A3",
+   "benefit": {
+    "en": "Melts sunscreen and make-up."
+   }
+  },
+  {
+   "id": "t1",
+   "name": "Hydrating Toner",
+   "brand": "Verdant",
+   "step": "toner",
+   "price": 3400,
+   "size": "200 ml",
+   "inStock": true,
+   "skinTypes": [
+    "dry",
+    "normal",
+    "sensitive"
+   ],
+   "concerns": {
+    "dryness": 2
+   },
+   "keyIngredients": [
+    "Hyaluronic acid"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf B1",
+   "benefit": {
+    "en": "Adds a light layer of moisture after cleansing."
+   }
+  },
+  {
+   "id": "t2",
+   "name": "BHA Clarifying Toner",
+   "brand": "Kiri",
+   "step": "toner",
+   "price": 3900,
+   "size": "150 ml",
+   "inStock": true,
+   "skinTypes": [
+    "oily",
+    "combination"
+   ],
+   "concerns": {
+    "acne": 2,
+    "pores": 3
+   },
+   "keyIngredients": [
+    "Salicylic acid",
+    "Witch hazel"
+   ],
+   "avoidSkinTypes": [
+    "dry",
+    "sensitive"
+   ],
+   "note": {
+    "en": "Avoid the eye area. Use at night."
+   },
+   "shelf": "Shelf B1",
+   "benefit": {
+    "en": "Smooths the look of pores."
+   }
+  },
+  {
+   "id": "t3",
+   "name": "Soothing Mist",
+   "brand": "Lumea",
+   "step": "toner",
+   "price": 3300,
+   "size": "100 ml",
+   "inStock": true,
+   "skinTypes": [
+    "sensitive",
+    "dry"
+   ],
+   "concerns": {
+    "redness": 3,
+    "dryness": 1
+   },
+   "keyIngredients": [
+    "Centella",
+    "Panthenol"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf B2",
+   "benefit": {
+    "en": "Calms skin that feels hot or irritated."
+   }
+  },
+  {
+   "id": "t4",
+   "name": "Brightening Toner",
+   "brand": "Kiri",
+   "step": "toner",
+   "price": 4100,
+   "size": "200 ml",
+   "inStock": true,
+   "skinTypes": [
+    "all"
+   ],
+   "concerns": {
+    "pigmentation": 2,
+    "dullness": 2
+   },
+   "keyIngredients": [
+    "Niacinamide",
+    "Licorice root"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf B2",
+   "benefit": {
+    "en": "Evens out the look of tired, dull skin."
+   }
+  },
+  {
+   "id": "s1",
+   "name": "Niacinamide 10% Serum",
+   "brand": "Kiri",
+   "step": "serum",
+   "price": 4800,
+   "size": "30 ml",
+   "inStock": true,
+   "skinTypes": [
+    "oily",
+    "combination",
+    "normal"
+   ],
+   "concerns": {
+    "pores": 3,
+    "acne": 2,
+    "pigmentation": 1
+   },
+   "keyIngredients": [
+    "Niacinamide",
+    "Zinc"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf C1",
+   "benefit": {
+    "en": "Balances oil and refines the look of pores."
+   }
+  },
+  {
+   "id": "s2",
+   "name": "Vitamin C Brightening Serum",
+   "brand": "Lumea",
+   "step": "serum",
+   "price": 6500,
+   "size": "30 ml",
+   "inStock": true,
+   "skinTypes": [
+    "normal",
+    "combination",
+    "dry",
+    "oily"
+   ],
+   "concerns": {
+    "pigmentation": 3,
+    "dullness": 3
+   },
+   "keyIngredients": [
+    "Vitamin C"
+   ],
+   "avoidSkinTypes": [
+    "sensitive"
+   ],
+   "note": {
+    "en": "May tingle. Always use sunscreen in the day."
+   },
+   "shelf": "Shelf C1",
+   "benefit": {
+    "en": "Brightens and helps fade the look of dark spots."
+   }
+  },
+  {
+   "id": "s3",
+   "name": "Hyaluronic Acid Serum",
+   "brand": "Verdant",
+   "step": "serum",
+   "price": 4500,
+   "size": "30 ml",
+   "inStock": true,
+   "skinTypes": [
+    "all"
+   ],
+   "concerns": {
+    "dryness": 3,
+    "dullness": 1
+   },
+   "keyIngredients": [
+    "Hyaluronic acid"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf C2",
+   "benefit": {
+    "en": "Plumps dry, thirsty skin with moisture."
+   }
+  },
+  {
+   "id": "s4",
+   "name": "Centella Calming Serum",
+   "brand": "Verdant",
+   "step": "serum",
+   "price": 5200,
+   "size": "30 ml",
+   "inStock": true,
+   "skinTypes": [
+    "sensitive",
+    "dry",
+    "all"
+   ],
+   "concerns": {
+    "redness": 3,
+    "acne": 1
+   },
+   "keyIngredients": [
+    "Centella asiatica",
+    "Madecassoside"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf C2",
+   "benefit": {
+    "en": "Soothes redness and irritation."
+   }
+  },
+  {
+   "id": "s5",
+   "name": "Retinol Night Serum 0.3%",
+   "brand": "Lumea",
+   "step": "serum",
+   "price": 7800,
+   "size": "30 ml",
+   "inStock": true,
+   "skinTypes": [
+    "normal",
+    "oily",
+    "combination"
+   ],
+   "concerns": {
+    "aging": 3,
+    "pigmentation": 1,
+    "acne": 1
+   },
+   "keyIngredients": [
+    "Retinol"
+   ],
+   "avoidSkinTypes": [
+    "sensitive",
+    "dry"
+   ],
+   "note": {
+    "en": "Night use only. Not for pregnancy. Always use sunscreen."
+   },
+   "shelf": "Shelf C3",
+   "benefit": {
+    "en": "Smooths the look of fine lines over time."
+   }
+  },
+  {
+   "id": "s6",
+   "name": "Peptide Firming Serum",
+   "brand": "Kiri",
+   "step": "serum",
+   "price": 8200,
+   "size": "30 ml",
+   "inStock": true,
+   "skinTypes": [
+    "dry",
+    "normal",
+    "combination"
+   ],
+   "concerns": {
+    "aging": 3,
+    "dryness": 1
+   },
+   "keyIngredients": [
+    "Peptides"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf C3",
+   "benefit": {
+    "en": "Supports firmer, smoother looking skin."
+   }
+  },
+  {
+   "id": "s7",
+   "name": "Caffeine Eye Serum",
+   "brand": "Kiri",
+   "step": "serum",
+   "price": 4400,
+   "size": "15 ml",
+   "inStock": true,
+   "skinTypes": [
+    "all"
+   ],
+   "concerns": {
+    "darkcircles": 3
+   },
+   "keyIngredients": [
+    "Caffeine",
+    "Peptides"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf C4",
+   "benefit": {
+    "en": "Refreshes the look of tired eyes."
+   }
+  },
+  {
+   "id": "s8",
+   "name": "Azelaic Acid Serum 10%",
+   "brand": "Lumea",
+   "step": "serum",
+   "price": 6900,
+   "size": "30 ml",
+   "inStock": false,
+   "skinTypes": [
+    "oily",
+    "combination",
+    "sensitive"
+   ],
+   "concerns": {
+    "acne": 2,
+    "pigmentation": 2,
+    "redness": 2
+   },
+   "keyIngredients": [
+    "Azelaic acid"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf C4",
+   "benefit": {
+    "en": "Targets breakout marks and redness."
+   }
+  },
+  {
+   "id": "m1",
+   "name": "Oil-Free Gel Moisturiser",
+   "brand": "Kiri",
+   "step": "moisturiser",
+   "price": 3700,
+   "size": "50 ml",
+   "inStock": true,
+   "skinTypes": [
+    "oily",
+    "combination"
+   ],
+   "concerns": {
+    "acne": 1,
+    "pores": 1
+   },
+   "keyIngredients": [
+    "Aloe",
+    "Niacinamide"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf D1",
+   "benefit": {
+    "en": "Light hydration that does not feel greasy."
+   }
+  },
+  {
+   "id": "m2",
+   "name": "Rich Repair Cream",
+   "brand": "Verdant",
+   "step": "moisturiser",
+   "price": 5400,
+   "size": "50 ml",
+   "inStock": true,
+   "skinTypes": [
+    "dry"
+   ],
+   "concerns": {
+    "dryness": 3,
+    "aging": 1
+   },
+   "keyIngredients": [
+    "Shea butter",
+    "Ceramides"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf D1",
+   "benefit": {
+    "en": "Deep moisture for dry, tight skin."
+   }
+  },
+  {
+   "id": "m3",
+   "name": "Barrier Repair Cream",
+   "brand": "Verdant",
+   "step": "moisturiser",
+   "price": 5900,
+   "size": "50 ml",
+   "inStock": true,
+   "skinTypes": [
+    "sensitive",
+    "dry"
+   ],
+   "concerns": {
+    "redness": 3,
+    "dryness": 2
+   },
+   "keyIngredients": [
+    "Ceramides",
+    "Panthenol"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf D2",
+   "benefit": {
+    "en": "Helps protect and calm sensitive skin."
+   }
+  },
+  {
+   "id": "m4",
+   "name": "Light Daily Lotion",
+   "brand": "Lumea",
+   "step": "moisturiser",
+   "price": 3300,
+   "size": "75 ml",
+   "inStock": true,
+   "skinTypes": [
+    "normal",
+    "combination"
+   ],
+   "concerns": {
+    "dullness": 1
+   },
+   "keyIngredients": [
+    "Glycerin"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf D2",
+   "benefit": {
+    "en": "Everyday comfort for balanced skin."
+   }
+  },
+  {
+   "id": "m5",
+   "name": "Brightening Day Cream",
+   "brand": "Lumea",
+   "step": "moisturiser",
+   "price": 5600,
+   "size": "50 ml",
+   "inStock": true,
+   "skinTypes": [
+    "all"
+   ],
+   "concerns": {
+    "dullness": 2,
+    "pigmentation": 2
+   },
+   "keyIngredients": [
+    "Vitamin C derivative",
+    "Niacinamide"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf D3",
+   "benefit": {
+    "en": "Gives a fresher, more even looking tone."
+   }
+  },
+  {
+   "id": "m6",
+   "name": "Night Repair Cream",
+   "brand": "Kiri",
+   "step": "moisturiser",
+   "price": 9800,
+   "size": "50 ml",
+   "inStock": true,
+   "skinTypes": [
+    "dry",
+    "normal"
+   ],
+   "concerns": {
+    "aging": 2,
+    "dryness": 2
+   },
+   "keyIngredients": [
+    "Peptides",
+    "Squalane"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf D3",
+   "benefit": {
+    "en": "A rich overnight cream for mature skin."
+   }
+  },
+  {
+   "id": "u1",
+   "name": "Light Gel Sunscreen SPF50",
+   "brand": "Kiri",
+   "step": "sunscreen",
+   "price": 3500,
+   "size": "50 ml",
+   "inStock": true,
+   "skinTypes": [
+    "oily",
+    "combination"
+   ],
+   "concerns": {
+    "acne": 1,
+    "pores": 1
+   },
+   "keyIngredients": [
+    "UV filters"
+   ],
+   "avoidSkinTypes": [],
+   "note": {
+    "en": "Reapply every 2 hours outdoors."
+   },
+   "shelf": "Shelf E1",
+   "benefit": {
+    "en": "Weightless sun protection that sits well under make-up."
+   }
+  },
+  {
+   "id": "u2",
+   "name": "Mineral Sunscreen SPF50",
+   "brand": "Verdant",
+   "step": "sunscreen",
+   "price": 4300,
+   "size": "50 ml",
+   "inStock": true,
+   "skinTypes": [
+    "sensitive"
+   ],
+   "concerns": {
+    "redness": 1
+   },
+   "keyIngredients": [
+    "Zinc oxide"
+   ],
+   "avoidSkinTypes": [],
+   "note": {
+    "en": "Reapply every 2 hours outdoors."
+   },
+   "shelf": "Shelf E1",
+   "benefit": {
+    "en": "Gentle mineral protection for easily irritated skin."
+   }
+  },
+  {
+   "id": "u3",
+   "name": "Moisturising Sunscreen SPF50",
+   "brand": "Lumea",
+   "step": "sunscreen",
+   "price": 3900,
+   "size": "50 ml",
+   "inStock": true,
+   "skinTypes": [
+    "dry",
+    "normal"
+   ],
+   "concerns": {
+    "dryness": 1
+   },
+   "keyIngredients": [
+    "Hyaluronic acid",
+    "UV filters"
+   ],
+   "avoidSkinTypes": [],
+   "note": {
+    "en": "Reapply every 2 hours outdoors."
+   },
+   "shelf": "Shelf E2",
+   "benefit": {
+    "en": "Protects and hydrates in one step."
+   }
+  },
+  {
+   "id": "u4",
+   "name": "Daily Sunscreen SPF30",
+   "brand": "Lumea",
+   "step": "sunscreen",
+   "price": 2400,
+   "size": "60 ml",
+   "inStock": true,
+   "skinTypes": [
+    "all"
+   ],
+   "concerns": {},
+   "keyIngredients": [
+    "UV filters"
+   ],
+   "avoidSkinTypes": [],
+   "note": {
+    "en": "Reapply every 2 hours outdoors."
+   },
+   "shelf": "Shelf E2",
+   "benefit": {
+    "en": "A simple everyday sunscreen at a friendly price."
+   }
+  },
+  {
+   "id": "u5",
+   "name": "Brightening Sunscreen SPF50",
+   "brand": "Kiri",
+   "step": "sunscreen",
+   "price": 4600,
+   "size": "50 ml",
+   "inStock": false,
+   "skinTypes": [
+    "all"
+   ],
+   "concerns": {
+    "pigmentation": 2,
+    "dullness": 2
+   },
+   "keyIngredients": [
+    "Niacinamide",
+    "UV filters"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf E3",
+   "benefit": {
+    "en": "Protects while helping tone look even."
+   }
+  },
+  {
+   "id": "k1",
+   "name": "Clay Purifying Mask",
+   "brand": "Kiri",
+   "step": "mask",
+   "price": 3800,
+   "size": "100 g",
+   "inStock": true,
+   "skinTypes": [
+    "oily",
+    "combination"
+   ],
+   "concerns": {
+    "pores": 3,
+    "acne": 1
+   },
+   "keyIngredients": [
+    "Kaolin clay"
+   ],
+   "avoidSkinTypes": [
+    "dry",
+    "sensitive"
+   ],
+   "note": {
+    "en": "Use once or twice a week. Do not leave to dry fully."
+   },
+   "shelf": "Shelf F1",
+   "benefit": {
+    "en": "Draws out excess oil and clears the look of pores."
+   }
+  },
+  {
+   "id": "k2",
+   "name": "Hydrating Sheet Mask (5 pack)",
+   "brand": "Verdant",
+   "step": "mask",
+   "price": 2600,
+   "size": "5 pcs",
+   "inStock": true,
+   "skinTypes": [
+    "all"
+   ],
+   "concerns": {
+    "dryness": 2,
+    "dullness": 1
+   },
+   "keyIngredients": [
+    "Hyaluronic acid"
+   ],
+   "avoidSkinTypes": [],
+   "note": {},
+   "shelf": "Shelf F1",
+   "benefit": {
+    "en": "A quick moisture boost before an event."
+   }
+  }
+ ]
+}
