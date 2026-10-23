@@ -30,6 +30,7 @@ class ResultsScreen extends StatelessWidget {
       skinType: skin,
       concerns: flow.concerns,
       steps: flow.steps,
+      sensitive: flow.sensitive,
     );
     final recs = result.recommendations;
 

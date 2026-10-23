@@ -52,6 +52,9 @@ class SkinTypeScreen extends StatelessWidget {
         ],
         selected: flow.skinType,
         onTap: flow.pickSkin,
+        onStartQuiz: flow.startQuiz,
+        quizTitle: s.t('quizEntryTitle'),
+        quizSubtitle: s.t('quizEntrySubtitle'),
       ),
     );
   }

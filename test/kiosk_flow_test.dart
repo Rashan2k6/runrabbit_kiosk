@@ -57,6 +57,47 @@ void main() {
       expect(find.text(s.t('resultsTitle')), findsOneWidget);
       expect(tester.takeException(), isNull); // no layout overflow
     });
+
+    testWidgets('quiz flow works at ${size.width}x${size.height}',
+        (tester) async {
+      tester.view.physicalSize = size;
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(KioskApp(repository: _FakeRepo()));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text(s.t('touchStart')));
+      await tester.pumpAndSettle();
+
+      // Tap quiz helper card on SkinTypeScreen
+      await tester.tap(find.text(s.t('quizEntryTitle')));
+      await tester.pumpAndSettle();
+
+      // Answer Yes, Yes, Yes (Q1 -> Q2 -> Q3 -> RESULT_OILY)
+      await tester.tap(find.text(s.t('yes')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(s.t('yes')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(s.t('yes')));
+      await tester.pumpAndSettle();
+
+      // Choose Sensitive concern card
+      expect(find.text(s.t('quizConcernTitle')), findsOneWidget);
+      await tester.tap(find.text(s.t('quiz.concern.sensitive')));
+      await tester.pumpAndSettle();
+
+      // On result screen, verify OS and tap Continue
+      expect(find.text('OS'), findsOneWidget);
+      expect(find.text('Oily | Sensitive'), findsOneWidget);
+      await tester.tap(find.text(s.t('continue')));
+      await tester.pumpAndSettle();
+
+      // Reaches Concerns screen with redness pre-selected (1 of 3 chosen)
+      expect(find.text(s.t('concernsTitle')), findsOneWidget);
+      expect(find.textContaining(s.t('counter', {'n': '1'})), findsOneWidget);
+      expect(tester.takeException(), isNull); // no layout overflow
+    });
   }
 
   testWidgets('returns to the welcome screen after the idle timeout',

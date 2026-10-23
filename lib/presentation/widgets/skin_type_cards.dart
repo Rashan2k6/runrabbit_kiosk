@@ -15,11 +15,17 @@ class SkinTypeCards extends StatelessWidget {
     required this.items,
     required this.selected,
     required this.onTap,
+    this.onStartQuiz,
+    this.quizTitle,
+    this.quizSubtitle,
   });
 
   final List<OptionItem> items;
   final String? selected;
   final void Function(String id) onTap;
+  final VoidCallback? onStartQuiz;
+  final String? quizTitle;
+  final String? quizSubtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -36,46 +42,56 @@ class SkinTypeCards extends StatelessWidget {
         // If cards can fit comfortably on one line (>= 95dp per card), display side-by-side
         final fitsInSingleLine = singleCardWidth >= a.s(95);
 
-        if (fitsInSingleLine) {
-          return Center(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  for (var i = 0; i < items.length; i++) ...[
-                    if (i > 0) SizedBox(width: gap),
-                    Expanded(
-                      child: _SkinTypeCard(
-                        item: items[i],
-                        selected: selected == items[i].id,
-                        onTap: () => onTap(items[i].id),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          );
-        }
-
-        // On narrower screens (phones), scroll horizontally so all 5 cards stay legible
         return Center(
           child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                for (var i = 0; i < items.length; i++) ...[
-                  if (i > 0) SizedBox(width: gap),
-                  SizedBox(
-                    width: a.s(136),
-                    child: _SkinTypeCard(
-                      item: items[i],
-                      selected: selected == items[i].id,
-                      onTap: () => onTap(items[i].id),
+                if (fitsInSingleLine)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      for (var i = 0; i < items.length; i++) ...[
+                        if (i > 0) SizedBox(width: gap),
+                        Expanded(
+                          child: _SkinTypeCard(
+                            item: items[i],
+                            selected: selected == items[i].id,
+                            onTap: () => onTap(items[i].id),
+                          ),
+                        ),
+                      ],
+                    ],
+                  )
+                else
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        for (var i = 0; i < items.length; i++) ...[
+                          if (i > 0) SizedBox(width: gap),
+                          SizedBox(
+                            width: a.s(136),
+                            child: _SkinTypeCard(
+                              item: items[i],
+                              selected: selected == items[i].id,
+                              onTap: () => onTap(items[i].id),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
+                  ),
+                if (onStartQuiz != null) ...[
+                  SizedBox(height: gap),
+                  _QuizHelperCard(
+                    title: quizTitle ?? 'Not sure? Find your skin type',
+                    subtitle: quizSubtitle ?? 'Take a quick test',
+                    onTap: onStartQuiz!,
                   ),
                 ],
               ],
@@ -83,6 +99,109 @@ class SkinTypeCards extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _QuizHelperCard extends StatelessWidget {
+  const _QuizHelperCard({
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final a = Adaptive.of(context);
+    return Semantics(
+      button: true,
+      label: '$title, $subtitle',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(Brand.cardRadius),
+          child: Ink(
+            decoration: BoxDecoration(
+              color: Brand.surface,
+              borderRadius: BorderRadius.circular(Brand.cardRadius),
+              border: Border.all(
+                color: Brand.accent.withValues(alpha: 0.35),
+                width: 1.6,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Brand.accent.withValues(alpha: 0.08),
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: a.s(56)),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: a.s(18),
+                  vertical: a.s(12),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: a.s(36),
+                      height: a.s(36),
+                      decoration: BoxDecoration(
+                        color: Brand.accent.withValues(alpha: 0.12),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.auto_awesome,
+                        color: Brand.accent,
+                        size: a.s(18),
+                      ),
+                    ),
+                    SizedBox(width: a.s(14)),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: TextStyle(
+                              fontSize: a.s(15),
+                              fontWeight: FontWeight.w800,
+                              color: Brand.primary,
+                              letterSpacing: -0.2,
+                            ),
+                          ),
+                          SizedBox(height: a.s(2)),
+                          Text(
+                            subtitle,
+                            style: TextStyle(
+                              fontSize: a.s(12),
+                              fontWeight: FontWeight.w600,
+                              color: Brand.accent,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(
+                      Icons.arrow_forward_rounded,
+                      color: Brand.accent,
+                      size: a.s(20),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

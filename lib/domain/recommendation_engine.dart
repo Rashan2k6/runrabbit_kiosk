@@ -32,7 +32,11 @@ class RecommendationResult {
 /// Pure logic, no Flutter imports, so it is easy to unit test.
 class RecommendationEngine {
   static Recommendation _rate(
-      Product p, String skinType, Set<String> concerns) {
+    Product p,
+    String skinType,
+    Set<String> concerns, {
+    bool sensitive = false,
+  }) {
     var score = 0;
     final matched = <String>[];
     for (final c in concerns) {
@@ -43,12 +47,21 @@ class RecommendationEngine {
       }
     }
     matched.sort((a, b) => p.concerns[b]!.compareTo(p.concerns[a]!));
-    var skinTerm = 0;
-    if (p.skinTypes.contains(skinType)) {
-      skinTerm = 2;
-    } else if (p.skinTypes.contains('all')) {
-      skinTerm = 1;
+
+    int skinTermFor(String type) {
+      if (p.skinTypes.contains(type)) return 2;
+      if (p.skinTypes.contains('all')) return 1;
+      return 0;
     }
+
+    var skinTerm = skinTermFor(skinType);
+    if (sensitive) {
+      final sensTerm = skinTermFor('sensitive');
+      if (sensTerm > skinTerm) {
+        skinTerm = sensTerm;
+      }
+    }
+
     return Recommendation(
       product: p,
       matchedConcerns: matched,
@@ -70,13 +83,15 @@ class RecommendationEngine {
     required String skinType,
     required Set<String> concerns,
     required Set<Step> steps,
+    bool sensitive = false,
   }) {
     final rated = products
         .where((p) =>
             p.inStock &&
             !p.avoidSkinTypes.contains(skinType) &&
+            (!sensitive || !p.avoidSkinTypes.contains('sensitive')) &&
             steps.contains(p.step))
-        .map((p) => _rate(p, skinType, concerns))
+        .map((p) => _rate(p, skinType, concerns, sensitive: sensitive))
         .toList();
 
     final picked = <Recommendation>[];

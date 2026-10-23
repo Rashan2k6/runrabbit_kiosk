@@ -6,6 +6,7 @@ import '../data/product_repository.dart';
 import '../domain/product.dart';
 import '../presentation/screens/idle_screen.dart';
 import '../presentation/screens/option_screens.dart';
+import '../presentation/screens/quiz_screens.dart';
 import '../presentation/screens/results_screen.dart';
 import '../presentation/state/flow_state.dart';
 import 'strings.dart';
@@ -112,6 +113,12 @@ class _KioskHomeState extends State<KioskHome> {
                       return IdleScreen(flow: _flow, s: s);
                     case Stage.skin:
                       return SkinTypeScreen(flow: _flow, s: s);
+                    case Stage.quizQuestion:
+                      return QuizQuestionScreen(flow: _flow, s: s);
+                    case Stage.quizConcern:
+                      return QuizConcernScreen(flow: _flow, s: s);
+                    case Stage.quizResult:
+                      return QuizResultScreen(flow: _flow, s: s);
                     case Stage.concerns:
                       return ConcernsScreen(flow: _flow, s: s);
                     case Stage.steps:

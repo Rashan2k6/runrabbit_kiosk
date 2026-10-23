@@ -36,6 +36,9 @@ class ScreenFrame extends StatelessWidget {
       case Stage.idle:
         return 0;
       case Stage.skin:
+      case Stage.quizQuestion:
+      case Stage.quizConcern:
+      case Stage.quizResult:
         return 1;
       case Stage.concerns:
         return 2;

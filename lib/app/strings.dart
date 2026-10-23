@@ -66,6 +66,40 @@ const _en = <String, String>{
   'concern.darkcircles': 'Dark circles',
   'concern.dryness': 'Dryness and dehydration',
   'concern.redness': 'Redness and irritation',
+  'quizEntryTitle': 'Not sure? Find your skin type',
+  'quizEntrySubtitle': 'Take a quick test',
+  'quizTitle': 'Find your skin type',
+  'quizSubtitle': 'How does your skin feel normally?',
+  'quizIntro':
+      'Ready for skincare tailored specifically to your needs? Take a quick test to discover your skin type and unlock personalized product recommendations!',
+  'quizProgress': 'Question {n}',
+  'yes': 'Yes',
+  'no': 'No',
+  'quiz.q1': 'Gets skin trouble after using rich creams',
+  'quiz.q2': 'Visibly large pores',
+  'quiz.q3': 'Have lots of blackheads and sebum',
+  'quiz.q4': 'Hair gets greasy quickly',
+  'quiz.q5': 'Dry U-zone area (cheeks and chin)',
+  'quiz.q6': 'Skin feels tight after cleansing',
+  'quiz.q7': 'Oily T-zone area (forehead, nose)',
+  'quiz.q8': 'Often gets flaky skin',
+  'quiz.q9': 'Skin is usually dry and tight',
+  'quizConcernTitle': "What's your main skin concern?",
+  'quizConcernSubtitle': 'Choose one skin concern that bothers you the most',
+  'quiz.concern.sensitive': 'Sensitive',
+  'quiz.concern.sensitive.s1': 'Becomes red and irritated easily',
+  'quiz.concern.sensitive.s2': 'Often gets skin reaction and skin trouble',
+  'quiz.concern.uneven': 'Uneven',
+  'quiz.concern.uneven.s1': 'Has dark spots and pigmented skin',
+  'quiz.concern.uneven.s2': 'Has dull and uneven tone',
+  'quiz.concern.wrinkled': 'Wrinkled',
+  'quiz.concern.wrinkled.s1': 'Reduced skin elasticity',
+  'quiz.concern.wrinkled.s2': 'Has visible wrinkles and fine lines',
+  'quizResultTitle': 'Your skin type is...',
+  'quizResultDisclaimer':
+      'This is a suggestion based on your answers. You can change it.',
+  'continue': 'Continue',
+  'chooseDifferentSkin': 'Choose a different skin type',
 };
 
 const _si = <String, String>{
@@ -110,4 +144,38 @@ const _si = <String, String>{
   'concern.darkcircles': 'ඇස් වටා අඳුරු වළලු',
   'concern.dryness': 'වියළි බව සහ ජලහීනතාව',
   'concern.redness': 'රතු වීම සහ කෝපය',
+  'quizEntryTitle': 'නිශ්චිත නැද්ද? ඔබේ සමේ වර්ගය සොයාගන්න', // TODO native speaker review
+  'quizEntrySubtitle': 'කෙටි පරීක්ෂණයක් කරන්න', // TODO native speaker review
+  'quizTitle': 'ඔබේ සමේ වර්ගය සොයාගන්න', // TODO native speaker review
+  'quizSubtitle': 'සාමාන්‍යයෙන් ඔබේ සමට කෙසේ දැනේද?', // TODO native speaker review
+  'quizIntro':
+      'ඔබේ අවශ්‍යතාවලටම ගැළපෙන සම රැකවරණයට සූදානම්ද? ඔබේ සමේ වර්ගය සොයාගෙන ඔබටම වෙන්වූ නිෂ්පාදන නිර්දේශ ලබාගැනීමට කෙටි පරීක්ෂණය කරන්න!', // TODO native speaker review
+  'quizProgress': '{n} වන ප්‍රශ්නය', // TODO native speaker review
+  'yes': 'ඔව්', // TODO native speaker review
+  'no': 'නැත', // TODO native speaker review
+  'quiz.q1': 'ඝන ක්‍රීම් භාවිතයෙන් පසු සමේ ගැටලු ඇති වේ', // TODO native speaker review
+  'quiz.q2': 'විශාල වූ සිදුරු පැහැදිලිව පෙනේ', // TODO native speaker review
+  'quiz.q3': 'කළු ලප සහ අධික තෙල් සහිත බව ඇත', // TODO native speaker review
+  'quiz.q4': 'හිසකෙස් ඉක්මනින් තෙල් සහිත වේ', // TODO native speaker review
+  'quiz.q5': 'U-කලාපය (කම්මුල් සහ නිකට) වියළිය', // TODO native speaker review
+  'quiz.q6': 'මුහුණ සේදීමෙන් පසු සම තද වූ බවක් දැනේ', // TODO native speaker review
+  'quiz.q7': 'තෙල් සහිත T-කලාපය (නළල, නාසය)', // TODO native speaker review
+  'quiz.q8': 'බොහෝ විට සමේ පොතු ගැලවී යයි', // TODO native speaker review
+  'quiz.q9': 'සම සාමාන්‍යයෙන් වියළි හා තදයි', // TODO native speaker review
+  'quizConcernTitle': 'ඔබේ ප්‍රධාන සමේ ගැටලුව කුමක්ද?', // TODO native speaker review
+  'quizConcernSubtitle': 'ඔබට වඩාත්ම බලපාන එක් සමේ ගැටලුවක් තෝරන්න', // TODO native speaker review
+  'quiz.concern.sensitive': 'සංවේදී', // TODO native speaker review
+  'quiz.concern.sensitive.s1': 'පහසුවෙන්ම රතු වී කෝපයට පත් වේ', // TODO native speaker review
+  'quiz.concern.sensitive.s2': 'නිතරම සමේ ප්‍රතික්‍රියා සහ ගැටලු ඇති වේ', // TODO native speaker review
+  'quiz.concern.uneven': 'අසමාන', // TODO native speaker review
+  'quiz.concern.uneven.s1': 'අඳුරු ලප සහ වර්ණක සහිත සම', // TODO native speaker review
+  'quiz.concern.uneven.s2': 'අඳුරු සහ අසමාන සමේ පැහැය', // TODO native speaker review
+  'quiz.concern.wrinkled': 'රැළි වැටුණු', // TODO native speaker review
+  'quiz.concern.wrinkled.s1': 'සමේ ඇදෙනසුලු බව අඩුවීම', // TODO native speaker review
+  'quiz.concern.wrinkled.s2': 'පැහැදිලි රැළි සහ සිහින් ඉරි ඇත', // TODO native speaker review
+  'quizResultTitle': 'ඔබේ සමේ වර්ගය...', // TODO native speaker review
+  'quizResultDisclaimer':
+      'මෙය ඔබගේ පිළිතුරු මත පදනම් වූ යෝජනාවකි. ඔබට එය වෙනස් කළ හැක.', // TODO native speaker review
+  'continue': 'ඉදිරියට යන්න', // TODO native speaker review
+  'chooseDifferentSkin': 'වෙනත් සමේ වර්ගයක් තෝරන්න', // TODO native speaker review
 };
