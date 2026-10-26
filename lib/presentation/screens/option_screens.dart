@@ -40,6 +40,17 @@ class SkinTypeScreen extends StatelessWidget {
       s: s,
       title: s.t('skinTitle'),
       subtitle: s.t('skinHelp'),
+      primary: FilledButton(
+        onPressed: flow.hasSkinSelection ? flow.continueFromSkin : null,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(s.t('continue')),
+            const SizedBox(width: 8),
+            const Icon(Icons.arrow_forward_rounded, size: 20),
+          ],
+        ),
+      ),
       child: SkinTypeCards(
         items: [
           for (final o in skinTypes)
@@ -47,11 +58,15 @@ class SkinTypeScreen extends StatelessWidget {
               id: o.id,
               label: s.skin(o.id),
               emoji: o.emoji,
-              subtitle: _skinSubtitle(o.id),
+              subtitle: o.id == 'sensitive'
+                  ? s.t('skinSensitiveHint')
+                  : _skinSubtitle(o.id),
             ),
         ],
-        selected: flow.skinType,
-        onTap: flow.pickSkin,
+        selectedBase: flow.skinType,
+        sensitive: flow.sensitive,
+        onTap: (id) =>
+            id == 'sensitive' ? flow.toggleSensitive() : flow.pickBaseSkin(id),
         onStartQuiz: flow.startQuiz,
         quizTitle: s.t('quizEntryTitle'),
         quizSubtitle: s.t('quizEntrySubtitle'),
@@ -97,7 +112,8 @@ class ConcernsScreen extends StatelessWidget {
       flow: flow,
       s: s,
       title: s.t('concernsTitle'),
-      subtitle: '${s.t('concernsHelp')}  ${s.t('counter', {'n': '$count'})}',
+      subtitle:
+          '${s.t('concernsHelp', {'max': '$maxConcerns'})}  ${s.t('counter', {'n': '$count', 'max': '$maxConcerns'})}',
       primary: FilledButton(
         onPressed: count == 0 ? null : flow.toSteps,
         child: Row(

@@ -28,11 +28,13 @@ class ProductCard extends StatelessWidget {
     super.key,
     required this.rec,
     required this.skinType,
+    required this.sensitive,
     required this.s,
   });
 
   final Recommendation rec;
-  final String skinType;
+  final String? skinType;
+  final bool sensitive;
   final Strings s;
 
   @override
@@ -40,12 +42,17 @@ class ProductCard extends StatelessWidget {
     final a = Adaptive.of(context);
     final p = rec.product;
     final note = p.noteFor(s.lang);
+    final baseSkinMatches = skinType != null &&
+        (p.skinTypes.contains(skinType) || p.skinTypes.contains('all'));
+    final sensitiveMatches = sensitive &&
+        (p.skinTypes.contains('sensitive') || p.skinTypes.contains('all'));
 
     final reason = <String>[
-      if (rec.skinMatch) s.t('reasonSkin', {'skin': s.skin(skinType)}),
+      if (baseSkinMatches) s.t('reasonSkin', {'skin': s.skin(skinType!)}),
+      if (sensitiveMatches) s.t('reasonSensitive'),
       if (rec.matchedConcerns.isNotEmpty)
         s.t('reasonHelps', {
-          'list': rec.matchedConcerns.map(s.concern).join(', '),
+          'list': rec.matchedConcerns.take(3).map(s.concern).join(', '),
         }),
     ].join(' ');
 
@@ -262,7 +269,7 @@ class ProductCard extends StatelessWidget {
                       SizedBox(width: a.s(6)),
                       Expanded(
                         child: Text(
-                          reason.isNotEmpty ? reason : s.skin(skinType),
+                          reason.isNotEmpty ? reason : s.t('reasonRoutine'),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(

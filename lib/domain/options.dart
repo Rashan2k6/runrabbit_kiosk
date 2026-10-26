@@ -26,7 +26,7 @@ const concernOptions = <Option>[
   Option('redness', '🌹'),
 ];
 
-const maxConcerns = 3;
+const maxConcerns = 5;
 
 /// The five steps customers can choose. `mask` remains in [Step] because it
 /// exists in the catalogue, but it is not part of the kiosk routine flow.

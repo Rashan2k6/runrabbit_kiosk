@@ -3,7 +3,9 @@ import 'package:runrabbit_kiosk/domain/skin_quiz.dart';
 
 void main() {
   group('SkinQuiz flowchart state machine', () {
-    test('exhaustively walks every path from Q1: all end in a result within 9 questions without loops', () {
+    test(
+        'exhaustively walks every path from Q1: all end in a result within 9 questions without loops',
+        () {
       void explorePath(String currentId, List<String> history) {
         expect(history.length, lessThan(9),
             reason: 'Path exceeded 9 questions without terminating: $history');
@@ -100,7 +102,9 @@ void main() {
       expect(SkinQuiz.skinTypeFromResult(dryTarget), 'dry');
     });
 
-    test('asserts the 9 base+concern combinations produce DS, DU, DW, OS, OU, OW, CS, CU, CW with labels', () {
+    test(
+        'asserts the 9 base+concern combinations produce DS, DU, DW, OS, OU, OW, CS, CU, CW with labels',
+        () {
       final expected = <(String, String), (String, String)>{
         ('dry', 'sensitive'): ('DS', 'Dry | Sensitive'),
         ('dry', 'uneven'): ('DU', 'Dry | Uneven'),

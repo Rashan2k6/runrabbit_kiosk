@@ -25,9 +25,10 @@ const _en = <String, String>{
   'touchStart': 'Touch to start',
   'skinTitle': 'What is your skin type?',
   'skinHelp': 'Pick the one that feels most like your skin.',
+  'skinSensitiveHint': 'Can be combined with the others',
   'concernsTitle': 'What would you like to improve?',
-  'concernsHelp': 'Choose up to 3.',
-  'counter': '{n} of 3 chosen',
+  'concernsHelp': 'Choose up to {max}.',
+  'counter': '{n} of {max} chosen',
   'stepsTitle': 'Which steps do you need?',
   'stepsHelp': 'Choose one, several, or the whole routine.',
   'wholeRoutine': 'Whole routine',
@@ -41,7 +42,9 @@ const _en = <String, String>{
   'patchTest':
       'Patch test any new product on a small area of skin first. If you have a skin condition or are pregnant, ask a doctor before trying new products.',
   'reasonSkin': 'Suitable for {skin} skin.',
+  'reasonSensitive': 'Suitable for sensitive skin.',
   'reasonHelps': 'Helps with {list}.',
+  'reasonRoutine': 'Selected for your routine.',
   'noResults':
       'We could not find a match for these choices. Please ask our team, they are happy to help.',
   'noSuitableStep':
@@ -100,6 +103,9 @@ const _en = <String, String>{
       'This is a suggestion based on your answers. You can change it.',
   'continue': 'Continue',
   'chooseDifferentSkin': 'Choose a different skin type',
+  'idleWarningTitle': 'Are you still there?',
+  'idleWarningBody': 'Your choices will be cleared in {n} seconds.',
+  'idleWarningStay': "I'm still here",
 };
 
 const _si = <String, String>{
@@ -107,9 +113,11 @@ const _si = <String, String>{
   'touchStart': 'ආරම්භ කිරීමට ස්පර්ශ කරන්න',
   'skinTitle': 'ඔබේ සමේ වර්ගය කුමක්ද?',
   'skinHelp': 'ඔබේ සමට වඩාත්ම සමාන එක තෝරන්න.',
+  'skinSensitiveHint':
+      'අනෙක් වර්ග සමග එකතු කළ හැක.', // TODO native speaker review
   'concernsTitle': 'ඔබට වැඩිදියුණු කර ගැනීමට අවශ්‍ය කුමක්ද?',
-  'concernsHelp': 'උපරිම 3ක් තෝරන්න.',
-  'counter': '3න් {n}ක් තෝරා ඇත',
+  'concernsHelp': 'උපරිම {max}ක් තෝරන්න.', // TODO native speaker review
+  'counter': '{max}න් {n}ක් තෝරා ඇත', // TODO native speaker review
   // TODO(native review): new routine-step text currently falls back to English.
   'resultsTitle': 'ඔබට යෝජිත රටාව',
   'resultsHelp': 'මේවා අත්හදා බැලීමට අවශ්‍ය නම් අපගේ කණ්ඩායමෙන් විමසන්න.',
@@ -121,7 +129,9 @@ const _si = <String, String>{
   'patchTest':
       'නව නිෂ්පාදනයක් භාවිතයට පෙර සමේ කුඩා කොටසක පරීක්ෂා කරන්න. ඔබට සමේ රෝගයක් ඇත්නම් හෝ ගර්භණී නම් වෛද්‍යවරයකුගෙන් විමසන්න.',
   'reasonSkin': '{skin} සමට ගැළපේ.',
+  'reasonSensitive': 'සංවේදී සමට ගැළපේ.', // TODO native speaker review
   'reasonHelps': '{list} සඳහා උපකාරී වේ.',
+  'reasonRoutine': 'ඔබේ රැකවරණයට තෝරා ඇත.', // TODO native speaker review
   'noResults':
       'මෙම තේරීම්වලට ගැළපීමක් සොයාගත නොහැකි විය. කරුණාකර අපගේ කණ්ඩායමෙන් විමසන්න.',
   'error': 'යම් දෝෂයක් සිදු විය. කරුණාකර අපගේ කණ්ඩායමෙන් උදව් ඉල්ලන්න.',
@@ -144,38 +154,57 @@ const _si = <String, String>{
   'concern.darkcircles': 'ඇස් වටා අඳුරු වළලු',
   'concern.dryness': 'වියළි බව සහ ජලහීනතාව',
   'concern.redness': 'රතු වීම සහ කෝපය',
-  'quizEntryTitle': 'නිශ්චිත නැද්ද? ඔබේ සමේ වර්ගය සොයාගන්න', // TODO native speaker review
+  'quizEntryTitle':
+      'නිශ්චිත නැද්ද? ඔබේ සමේ වර්ගය සොයාගන්න', // TODO native speaker review
   'quizEntrySubtitle': 'කෙටි පරීක්ෂණයක් කරන්න', // TODO native speaker review
   'quizTitle': 'ඔබේ සමේ වර්ගය සොයාගන්න', // TODO native speaker review
-  'quizSubtitle': 'සාමාන්‍යයෙන් ඔබේ සමට කෙසේ දැනේද?', // TODO native speaker review
+  'quizSubtitle':
+      'සාමාන්‍යයෙන් ඔබේ සමට කෙසේ දැනේද?', // TODO native speaker review
   'quizIntro':
       'ඔබේ අවශ්‍යතාවලටම ගැළපෙන සම රැකවරණයට සූදානම්ද? ඔබේ සමේ වර්ගය සොයාගෙන ඔබටම වෙන්වූ නිෂ්පාදන නිර්දේශ ලබාගැනීමට කෙටි පරීක්ෂණය කරන්න!', // TODO native speaker review
   'quizProgress': '{n} වන ප්‍රශ්නය', // TODO native speaker review
   'yes': 'ඔව්', // TODO native speaker review
   'no': 'නැත', // TODO native speaker review
-  'quiz.q1': 'ඝන ක්‍රීම් භාවිතයෙන් පසු සමේ ගැටලු ඇති වේ', // TODO native speaker review
+  'quiz.q1':
+      'ඝන ක්‍රීම් භාවිතයෙන් පසු සමේ ගැටලු ඇති වේ', // TODO native speaker review
   'quiz.q2': 'විශාල වූ සිදුරු පැහැදිලිව පෙනේ', // TODO native speaker review
   'quiz.q3': 'කළු ලප සහ අධික තෙල් සහිත බව ඇත', // TODO native speaker review
   'quiz.q4': 'හිසකෙස් ඉක්මනින් තෙල් සහිත වේ', // TODO native speaker review
   'quiz.q5': 'U-කලාපය (කම්මුල් සහ නිකට) වියළිය', // TODO native speaker review
-  'quiz.q6': 'මුහුණ සේදීමෙන් පසු සම තද වූ බවක් දැනේ', // TODO native speaker review
+  'quiz.q6':
+      'මුහුණ සේදීමෙන් පසු සම තද වූ බවක් දැනේ', // TODO native speaker review
   'quiz.q7': 'තෙල් සහිත T-කලාපය (නළල, නාසය)', // TODO native speaker review
   'quiz.q8': 'බොහෝ විට සමේ පොතු ගැලවී යයි', // TODO native speaker review
   'quiz.q9': 'සම සාමාන්‍යයෙන් වියළි හා තදයි', // TODO native speaker review
-  'quizConcernTitle': 'ඔබේ ප්‍රධාන සමේ ගැටලුව කුමක්ද?', // TODO native speaker review
-  'quizConcernSubtitle': 'ඔබට වඩාත්ම බලපාන එක් සමේ ගැටලුවක් තෝරන්න', // TODO native speaker review
+  'quizConcernTitle':
+      'ඔබේ ප්‍රධාන සමේ ගැටලුව කුමක්ද?', // TODO native speaker review
+  'quizConcernSubtitle':
+      'ඔබට වඩාත්ම බලපාන එක් සමේ ගැටලුවක් තෝරන්න', // TODO native speaker review
   'quiz.concern.sensitive': 'සංවේදී', // TODO native speaker review
-  'quiz.concern.sensitive.s1': 'පහසුවෙන්ම රතු වී කෝපයට පත් වේ', // TODO native speaker review
-  'quiz.concern.sensitive.s2': 'නිතරම සමේ ප්‍රතික්‍රියා සහ ගැටලු ඇති වේ', // TODO native speaker review
+  'quiz.concern.sensitive.s1':
+      'පහසුවෙන්ම රතු වී කෝපයට පත් වේ', // TODO native speaker review
+  'quiz.concern.sensitive.s2':
+      'නිතරම සමේ ප්‍රතික්‍රියා සහ ගැටලු ඇති වේ', // TODO native speaker review
   'quiz.concern.uneven': 'අසමාන', // TODO native speaker review
-  'quiz.concern.uneven.s1': 'අඳුරු ලප සහ වර්ණක සහිත සම', // TODO native speaker review
-  'quiz.concern.uneven.s2': 'අඳුරු සහ අසමාන සමේ පැහැය', // TODO native speaker review
+  'quiz.concern.uneven.s1':
+      'අඳුරු ලප සහ වර්ණක සහිත සම', // TODO native speaker review
+  'quiz.concern.uneven.s2':
+      'අඳුරු සහ අසමාන සමේ පැහැය', // TODO native speaker review
   'quiz.concern.wrinkled': 'රැළි වැටුණු', // TODO native speaker review
-  'quiz.concern.wrinkled.s1': 'සමේ ඇදෙනසුලු බව අඩුවීම', // TODO native speaker review
-  'quiz.concern.wrinkled.s2': 'පැහැදිලි රැළි සහ සිහින් ඉරි ඇත', // TODO native speaker review
+  'quiz.concern.wrinkled.s1':
+      'සමේ ඇදෙනසුලු බව අඩුවීම', // TODO native speaker review
+  'quiz.concern.wrinkled.s2':
+      'පැහැදිලි රැළි සහ සිහින් ඉරි ඇත', // TODO native speaker review
   'quizResultTitle': 'ඔබේ සමේ වර්ගය...', // TODO native speaker review
   'quizResultDisclaimer':
       'මෙය ඔබගේ පිළිතුරු මත පදනම් වූ යෝජනාවකි. ඔබට එය වෙනස් කළ හැක.', // TODO native speaker review
   'continue': 'ඉදිරියට යන්න', // TODO native speaker review
-  'chooseDifferentSkin': 'වෙනත් සමේ වර්ගයක් තෝරන්න', // TODO native speaker review
+  'chooseDifferentSkin':
+      'වෙනත් සමේ වර්ගයක් තෝරන්න', // TODO native speaker review
+  'idleWarningTitle':
+      'ඔබ තවමත් මෙහි සිටිනවාද?', // TODO native speaker review
+  'idleWarningBody':
+      'ඔබගේ තේරීම් තත්පර {n}කින් ඉවත් කෙරේ.', // TODO native speaker review
+  'idleWarningStay':
+      'මම තවමත් මෙහි සිටිමි', // TODO native speaker review
 };

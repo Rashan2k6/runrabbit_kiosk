@@ -32,8 +32,10 @@ void main() {
     await tester.tap(find.text(s.t('touchStart')));
     await tester.pumpAndSettle();
 
-    // Pick a skin type to reach ConcernsScreen
+    // Pick a skin type to reach ConcernsScreen (tap no longer auto-advances)
     await tester.tap(find.text(s.skin('oily')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(s.t('continue')));
     await tester.pumpAndSettle();
 
     expect(find.byType(ConcernCards), findsOneWidget);
@@ -61,27 +63,49 @@ void main() {
     // Tap 1st concern (acne)
     await tester.tap(find.text(s.concern('acne')));
     await tester.pumpAndSettle();
-    expect(find.textContaining('1 of 3 chosen'), findsOneWidget);
+    expect(find.textContaining('1 of $maxConcerns chosen'), findsOneWidget);
 
     // Tap 2nd concern (pores)
     await tester.tap(find.text(s.concern('pores')));
     await tester.pumpAndSettle();
-    expect(find.textContaining('2 of 3 chosen'), findsOneWidget);
+    expect(find.textContaining('2 of $maxConcerns chosen'), findsOneWidget);
 
     // Tap 3rd concern (pigmentation)
     await tester.tap(find.text(s.concern('pigmentation')));
     await tester.pumpAndSettle();
-    expect(find.textContaining('3 of 3 chosen'), findsOneWidget);
+    expect(find.textContaining('3 of $maxConcerns chosen'), findsOneWidget);
 
-    // Tapping a 4th concern (dullness) should be ignored because max is 3
+    // Tap 4th concern (dullness)
     await tester.tap(find.text(s.concern('dullness')));
     await tester.pumpAndSettle();
-    expect(find.textContaining('3 of 3 chosen'), findsOneWidget);
+    expect(find.textContaining('4 of $maxConcerns chosen'), findsOneWidget);
 
-    // Deselect pores
+    // Tap 5th concern (aging)
+    await tester.scrollUntilVisible(
+      find.text(s.concern('aging')),
+      60.0,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text(s.concern('aging')));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('5 of $maxConcerns chosen'), findsOneWidget);
+
+    // Tapping a 6th concern (redness) should be ignored because max is 5
+    await tester.scrollUntilVisible(
+      find.text(s.concern('redness')),
+      60.0,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text(s.concern('redness')));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('5 of $maxConcerns chosen'), findsOneWidget);
+
+    // Deselect pores (scroll back to top)
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, 500));
+    await tester.pumpAndSettle();
     await tester.tap(find.text(s.concern('pores')));
     await tester.pumpAndSettle();
-    expect(find.textContaining('2 of 3 chosen'), findsOneWidget);
+    expect(find.textContaining('4 of $maxConcerns chosen'), findsOneWidget);
 
     // Next button should now be enabled
     final enabledNext = tester.widget<FilledButton>(

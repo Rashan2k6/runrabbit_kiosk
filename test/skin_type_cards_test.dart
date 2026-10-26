@@ -42,11 +42,16 @@ void main() {
     // Verify circular cropped images exist
     expect(find.byType(ClipOval), findsNWidgets(5));
 
-    // Tap one of the cards (e.g. combination)
+    // Tap one of the cards (e.g. combination) – no longer auto-advances
     await tester.tap(find.text(s.skin('combination')));
     await tester.pumpAndSettle();
 
-    // Should progress to the next screen (concerns)
+    // Still on skin screen; must tap Continue to advance
+    expect(find.text(s.t('skinTitle')), findsOneWidget);
+    await tester.tap(find.text(s.t('continue')));
+    await tester.pumpAndSettle();
+
+    // Now on concerns screen
     expect(find.text(s.t('concernsTitle')), findsOneWidget);
   });
 }

@@ -33,7 +33,7 @@ class RecommendationResult {
 class RecommendationEngine {
   static Recommendation _rate(
     Product p,
-    String skinType,
+    String? skinType,
     Set<String> concerns, {
     bool sensitive = false,
   }) {
@@ -54,7 +54,7 @@ class RecommendationEngine {
       return 0;
     }
 
-    var skinTerm = skinTermFor(skinType);
+    var skinTerm = skinType == null ? 0 : skinTermFor(skinType);
     if (sensitive) {
       final sensTerm = skinTermFor('sensitive');
       if (sensTerm > skinTerm) {
@@ -80,7 +80,7 @@ class RecommendationEngine {
 
   static RecommendationResult recommend({
     required List<Product> products,
-    required String skinType,
+    required String? skinType,
     required Set<String> concerns,
     required Set<Step> steps,
     bool sensitive = false,
@@ -88,7 +88,7 @@ class RecommendationEngine {
     final rated = products
         .where((p) =>
             p.inStock &&
-            !p.avoidSkinTypes.contains(skinType) &&
+            (skinType == null || !p.avoidSkinTypes.contains(skinType)) &&
             (!sensitive || !p.avoidSkinTypes.contains('sensitive')) &&
             steps.contains(p.step))
         .map((p) => _rate(p, skinType, concerns, sensitive: sensitive))

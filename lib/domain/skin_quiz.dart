@@ -61,7 +61,8 @@ class SkinQuizResult {
   int get hashCode => Object.hash(base, concern, code, label);
 
   @override
-  String toString() => 'SkinQuizResult($code: $label, base: $base, concern: $concern)';
+  String toString() =>
+      'SkinQuizResult($code: $label, base: $base, concern: $concern)';
 }
 
 /// Pure Dart logic for the optional skin type quiz.

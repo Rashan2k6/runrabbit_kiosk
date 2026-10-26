@@ -31,8 +31,10 @@ void main() {
     await tester.tap(find.text(s.t('touchStart')));
     await tester.pumpAndSettle();
 
-    // Pick skin type (oily)
+    // Pick skin type (oily) – card tap no longer auto-advances
     await tester.tap(find.text(s.skin('oily')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(s.t('continue')));
     await tester.pumpAndSettle();
 
     // Pick concern (acne)
@@ -74,9 +76,8 @@ void main() {
 
     // Routine products share rows on a wide kiosk instead of consuming one
     // full-width section per routine step.
-    final cardPositions = cardRenderObjects
-        .map((box) => box.localToGlobal(Offset.zero))
-        .toList();
+    final cardPositions =
+        cardRenderObjects.map((box) => box.localToGlobal(Offset.zero)).toList();
     expect(cardPositions[0].dy, closeTo(cardPositions[1].dy, 0.1));
     expect(cardPositions[1].dy, closeTo(cardPositions[2].dy, 0.1));
   });

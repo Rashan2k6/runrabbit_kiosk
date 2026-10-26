@@ -30,7 +30,8 @@ class KioskFlow extends ChangeNotifier {
   String? quizBaseResult;
   String currentQuizNodeId = SkinQuiz.startNodeId;
   final List<String> quizHistory = [];
-  final Set<String> _quizConcerns = {};
+  final Set<String> quizConcerns = {};
+  bool cameFromQuiz = false;
 
   void start() => _go(Stage.skin);
 
@@ -54,29 +55,50 @@ class KioskFlow extends ChangeNotifier {
 
   void pickQuizConcern(String concernId) {
     if (quizBaseResult == null) return;
-    quizResult = SkinQuiz.buildResult(quizBaseResult!, concernId);
+    final newResult = SkinQuiz.buildResult(quizBaseResult!, concernId);
+    if (quizResult != newResult) {
+      quizResult = newResult;
+      _quizApplied = false;
+    }
     _go(Stage.quizResult);
   }
+
+  bool _quizApplied = false;
 
   void applyQuizAndContinue() {
     if (quizResult == null) return;
     skinType = quizResult!.base;
     sensitive = quizResult!.concern == 'sensitive';
+    cameFromQuiz = true;
 
-    _quizConcerns.clear();
-    switch (quizResult!.concern) {
-      case 'sensitive':
-        _quizConcerns.add('redness');
-      case 'uneven':
-        _quizConcerns.addAll(['pigmentation', 'dullness']);
-      case 'wrinkled':
-        _quizConcerns.add('aging');
-    }
-
-    for (final c in _quizConcerns) {
-      if (concerns.length < maxConcerns || concerns.contains(c)) {
-        concerns.add(c);
+    if (!_quizApplied) {
+      final newQuizConcerns = <String>{};
+      switch (quizResult!.concern) {
+        case 'sensitive':
+          newQuizConcerns.add('redness');
+        case 'uneven':
+          newQuizConcerns.addAll(['pigmentation', 'dullness']);
+        case 'wrinkled':
+          newQuizConcerns.add('aging');
       }
+
+      for (final oldQuizConcern in quizConcerns) {
+        if (!newQuizConcerns.contains(oldQuizConcern)) {
+          concerns.remove(oldQuizConcern);
+        }
+      }
+
+      quizConcerns
+        ..clear()
+        ..addAll(newQuizConcerns);
+
+      for (final c in quizConcerns) {
+        if (concerns.length < maxConcerns || concerns.contains(c)) {
+          concerns.add(c);
+        }
+      }
+
+      _quizApplied = true;
     }
 
     _go(Stage.concerns);
@@ -84,23 +106,48 @@ class KioskFlow extends ChangeNotifier {
 
   void chooseDifferentSkinType() {
     _clearQuizDerivedState();
+    sensitive = false;
     _go(Stage.skin);
   }
 
-  void pickSkin(String id) {
-    _clearQuizDerivedState();
+  /// Selects one base skin type without advancing to the next screen.
+  void pickBaseSkin(String id) {
+    if (quizResult != null) {
+      _clearQuizDerivedState();
+      sensitive = false;
+    }
     skinType = id;
-    _go(Stage.concerns);
+    notifyListeners();
+  }
+
+  /// Changes the independent sensitive-skin selection without affecting the
+  /// selected base skin type.
+  void toggleSensitive() {
+    if (quizResult != null) {
+      _clearQuizDerivedState();
+    }
+    sensitive = !sensitive;
+    notifyListeners();
+  }
+
+  bool get hasSkinSelection => skinType != null || sensitive;
+
+  void continueFromSkin() {
+    if (hasSkinSelection) {
+      cameFromQuiz = false;
+      _go(Stage.concerns);
+    }
   }
 
   void _clearQuizDerivedState() {
-    concerns.removeAll(_quizConcerns);
-    _quizConcerns.clear();
-    sensitive = false;
+    concerns.removeAll(quizConcerns);
+    quizConcerns.clear();
     quizResult = null;
     quizBaseResult = null;
     quizHistory.clear();
     currentQuizNodeId = SkinQuiz.startNodeId;
+    cameFromQuiz = false;
+    _quizApplied = false;
   }
 
   void toggleConcern(String id) {
@@ -142,11 +189,20 @@ class KioskFlow extends ChangeNotifier {
       case Stage.steps:
         _go(Stage.concerns);
       case Stage.concerns:
-        _go(Stage.skin);
+        if (cameFromQuiz) {
+          _go(Stage.quizResult);
+        } else {
+          _go(Stage.skin);
+        }
       case Stage.quizResult:
         _go(Stage.quizConcern);
       case Stage.quizConcern:
-        _go(Stage.quizQuestion);
+        if (quizHistory.isNotEmpty) {
+          currentQuizNodeId = quizHistory.removeLast();
+          _go(Stage.quizQuestion);
+        } else {
+          _go(Stage.skin);
+        }
       case Stage.quizQuestion:
         if (quizHistory.isNotEmpty) {
           currentQuizNodeId = quizHistory.removeLast();
@@ -172,9 +228,11 @@ class KioskFlow extends ChangeNotifier {
     sensitive = false;
     quizResult = null;
     quizBaseResult = null;
-    _quizConcerns.clear();
+    quizConcerns.clear();
     quizHistory.clear();
     currentQuizNodeId = SkinQuiz.startNodeId;
+    cameFromQuiz = false;
+    _quizApplied = false;
     concerns.clear();
     steps.clear();
     lang = 'en';

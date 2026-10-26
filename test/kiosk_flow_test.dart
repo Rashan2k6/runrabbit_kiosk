@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:runrabbit_kiosk/app/kiosk_app.dart';
 import 'package:runrabbit_kiosk/app/strings.dart';
 import 'package:runrabbit_kiosk/data/product_repository.dart';
+import 'package:runrabbit_kiosk/domain/options.dart';
 import 'package:runrabbit_kiosk/domain/product.dart';
 
 class _FakeRepo implements ProductRepository {
@@ -42,6 +43,8 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.text(s.skin('oily')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(s.t('continue')));
       await tester.pumpAndSettle();
 
       await tester.tap(find.text(s.concern('acne')));
@@ -93,9 +96,12 @@ void main() {
       await tester.tap(find.text(s.t('continue')));
       await tester.pumpAndSettle();
 
-      // Reaches Concerns screen with redness pre-selected (1 of 3 chosen)
+      // Reaches Concerns screen with redness pre-selected (1 of maxConcerns chosen)
       expect(find.text(s.t('concernsTitle')), findsOneWidget);
-      expect(find.textContaining(s.t('counter', {'n': '1'})), findsOneWidget);
+      expect(
+        find.textContaining(s.t('counter', {'n': '1', 'max': '$maxConcerns'})),
+        findsOneWidget,
+      );
       expect(tester.takeException(), isNull); // no layout overflow
     });
   }

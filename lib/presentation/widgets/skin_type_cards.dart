@@ -13,7 +13,8 @@ class SkinTypeCards extends StatelessWidget {
   const SkinTypeCards({
     super.key,
     required this.items,
-    required this.selected,
+    required this.selectedBase,
+    required this.sensitive,
     required this.onTap,
     this.onStartQuiz,
     this.quizTitle,
@@ -21,7 +22,8 @@ class SkinTypeCards extends StatelessWidget {
   });
 
   final List<OptionItem> items;
-  final String? selected;
+  final String? selectedBase;
+  final bool sensitive;
   final void Function(String id) onTap;
   final VoidCallback? onStartQuiz;
   final String? quizTitle;
@@ -58,7 +60,9 @@ class SkinTypeCards extends StatelessWidget {
                         Expanded(
                           child: _SkinTypeCard(
                             item: items[i],
-                            selected: selected == items[i].id,
+                            selected: items[i].id == 'sensitive'
+                                ? sensitive
+                                : selectedBase == items[i].id,
                             onTap: () => onTap(items[i].id),
                           ),
                         ),
@@ -78,7 +82,9 @@ class SkinTypeCards extends StatelessWidget {
                             width: a.s(136),
                             child: _SkinTypeCard(
                               item: items[i],
-                              selected: selected == items[i].id,
+                              selected: items[i].id == 'sensitive'
+                                  ? sensitive
+                                  : selectedBase == items[i].id,
                               onTap: () => onTap(items[i].id),
                             ),
                           ),

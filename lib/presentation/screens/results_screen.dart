@@ -24,7 +24,11 @@ class ResultsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final a = Adaptive.of(context);
-    final skin = flow.skinType ?? 'normal';
+    final skin = flow.skinType;
+    final selectedSkinLabels = [
+      if (skin != null) s.skin(skin),
+      if (flow.sensitive) s.skin('sensitive'),
+    ];
     final result = RecommendationEngine.recommend(
       products: products,
       skinType: skin,
@@ -74,7 +78,7 @@ class ResultsScreen extends StatelessWidget {
                           ),
                           SizedBox(width: a.s(8)),
                           Text(
-                            '${s.skin(skin)} Skin Routine',
+                            '${selectedSkinLabels.join(' + ')} Skin Routine',
                             style: TextStyle(
                               fontSize: a.s(15),
                               fontWeight: FontWeight.w800,
@@ -143,6 +147,7 @@ class ResultsScreen extends StatelessWidget {
                   _RecommendationGrid(
                     recommendations: recs,
                     skinType: skin,
+                    sensitive: flow.sensitive,
                     s: s,
                     a: a,
                     width: box.maxWidth,
@@ -222,13 +227,15 @@ class _RecommendationGrid extends StatelessWidget {
   const _RecommendationGrid({
     required this.recommendations,
     required this.skinType,
+    required this.sensitive,
     required this.s,
     required this.a,
     required this.width,
   });
 
   final List<Recommendation> recommendations;
-  final String skinType;
+  final String? skinType;
+  final bool sensitive;
   final Strings s;
   final Adaptive a;
   final double width;
@@ -257,6 +264,7 @@ class _RecommendationGrid extends StatelessWidget {
                       child: ProductCard(
                         rec: recommendations[row * columns + column],
                         skinType: skinType,
+                        sensitive: sensitive,
                         s: s,
                       ),
                     )

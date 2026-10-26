@@ -93,63 +93,63 @@ class QuizQuestionScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: a.s(16)),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SizedBox(
-                            height: math.max(64.0, a.s(64)),
-                            child: OutlinedButton(
-                              onPressed: () => flow.answerQuizQuestion(false),
-                              style: OutlinedButton.styleFrom(
-                                backgroundColor: Brand.surface,
-                                side: const BorderSide(
-                                  color: Brand.outline,
-                                  width: 1.8,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(Brand.cardRadius),
-                                ),
-                              ),
-                              child: Text(
-                                s.t('no'),
-                                style: TextStyle(
-                                  fontSize: a.s(18),
-                                  fontWeight: FontWeight.w800,
-                                  color: Brand.primary,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: math.max(64.0, a.s(64)),
+                        child: OutlinedButton(
+                          onPressed: () => flow.answerQuizQuestion(false),
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Brand.surface,
+                            side: const BorderSide(
+                              color: Brand.outline,
+                              width: 1.8,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(Brand.cardRadius),
+                            ),
+                          ),
+                          child: Text(
+                            s.t('no'),
+                            style: TextStyle(
+                              fontSize: a.s(18),
+                              fontWeight: FontWeight.w800,
+                              color: Brand.primary,
+                              letterSpacing: 0.5,
                             ),
                           ),
                         ),
-                        SizedBox(width: a.s(14)),
-                        Expanded(
-                          child: SizedBox(
-                            height: math.max(64.0, a.s(64)),
-                            child: FilledButton(
-                              onPressed: () => flow.answerQuizQuestion(true),
-                              style: FilledButton.styleFrom(
-                                backgroundColor: Brand.primary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(Brand.cardRadius),
-                                ),
-                              ),
-                              child: Text(
-                                s.t('yes'),
-                                style: TextStyle(
-                                  fontSize: a.s(18),
-                                  fontWeight: FontWeight.w800,
-                                  color: Brand.onPrimary,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
+                    SizedBox(width: a.s(14)),
+                    Expanded(
+                      child: SizedBox(
+                        height: math.max(64.0, a.s(64)),
+                        child: FilledButton(
+                          onPressed: () => flow.answerQuizQuestion(true),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: Brand.primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(Brand.cardRadius),
+                            ),
+                          ),
+                          child: Text(
+                            s.t('yes'),
+                            style: TextStyle(
+                              fontSize: a.s(18),
+                              fontWeight: FontWeight.w800,
+                              color: Brand.onPrimary,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
