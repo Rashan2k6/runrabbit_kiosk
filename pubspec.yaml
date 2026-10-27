@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   # Keeps the tablet screen awake. The only third-party package on purpose (lightweight).
+  flutter_svg: ^2.3.0
   wakelock_plus: ^1.2.8
 
 dev_dependencies:
@@ -23,3 +24,4 @@ flutter:
     - assets/data/
     - assets/images/skin_types/
     - assets/images/concerns/
+    - assets/icons/

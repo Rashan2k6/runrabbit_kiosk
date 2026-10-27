@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../app/brand.dart';
+import '../../widgets/app_icon_badge.dart';
 import 'adaptive.dart';
 import 'option_grid.dart';
 
@@ -156,18 +157,10 @@ class _QuizHelperCard extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Container(
-                      width: a.s(36),
-                      height: a.s(36),
-                      decoration: BoxDecoration(
-                        color: Brand.accent.withValues(alpha: 0.12),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.auto_awesome,
-                        color: Brand.accent,
-                        size: a.s(18),
-                      ),
+                    AppIconBadge(
+                      svgAsset: 'assets/icons/sparkle.svg',
+                      size: a.s(36),
+                      selected: false,
                     ),
                     SizedBox(width: a.s(14)),
                     Expanded(
@@ -347,9 +340,9 @@ class _SkinTypeCard extends StatelessWidget {
                     height: a.s(22),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: selected ? Brand.primary : Colors.transparent,
+                      color: selected ? Brand.accent : Colors.transparent,
                       border: Border.all(
-                        color: selected ? Brand.primary : Brand.outline,
+                        color: selected ? Brand.accent : Brand.outline,
                         width: 1.8,
                       ),
                     ),
@@ -357,7 +350,7 @@ class _SkinTypeCard extends StatelessWidget {
                         ? Icon(
                             Icons.check_rounded,
                             size: a.s(15),
-                            color: Brand.onPrimary,
+                            color: Colors.white,
                           )
                         : null,
                   ),

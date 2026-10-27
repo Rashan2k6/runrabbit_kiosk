@@ -165,12 +165,14 @@ class StepsScreen extends StatelessWidget {
             OptionItem(
               id: step.name,
               label: s.step(step.name),
-              icon: _stepIcon(step),
+              svgAsset: _stepSvg(step),
+              color: _stepColor(step),
             ),
           OptionItem(
             id: 'wholeRoutine',
             label: s.t('wholeRoutine'),
-            icon: Icons.auto_awesome_rounded,
+            svgAsset: 'assets/icons/routine.svg',
+            color: const Color(0xFF141414),
           ),
         ],
         selected: {
@@ -184,20 +186,37 @@ class StepsScreen extends StatelessWidget {
     );
   }
 
-  IconData _stepIcon(Step step) {
+  String _stepSvg(Step step) {
     switch (step) {
       case Step.cleanser:
-        return Icons.water_drop_outlined;
+        return 'assets/icons/cleanser.svg';
       case Step.toner:
-        return Icons.water_rounded;
+        return 'assets/icons/toner.svg';
       case Step.serum:
-        return Icons.colorize_rounded;
+        return 'assets/icons/serum.svg';
       case Step.moisturiser:
-        return Icons.spa_outlined;
+        return 'assets/icons/moisturiser.svg';
       case Step.sunscreen:
-        return Icons.wb_sunny_outlined;
+        return 'assets/icons/sunscreen.svg';
       case Step.mask:
-        return Icons.masks_rounded;
+        return 'assets/icons/routine.svg';
+    }
+  }
+
+  Color _stepColor(Step step) {
+    switch (step) {
+      case Step.cleanser:
+        return const Color(0xFF3F8F7B);
+      case Step.toner:
+        return const Color(0xFF4C7FA8);
+      case Step.serum:
+        return const Color(0xFFC4872A);
+      case Step.moisturiser:
+        return const Color(0xFFC8566B);
+      case Step.sunscreen:
+        return const Color(0xFFD8582B);
+      case Step.mask:
+        return const Color(0xFF141414);
     }
   }
 }

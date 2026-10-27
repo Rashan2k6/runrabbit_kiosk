@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../app/brand.dart';
 import '../../app/strings.dart';
 import '../../domain/skin_quiz.dart';
+import '../../widgets/app_icon_badge.dart';
 import '../state/flow_state.dart';
 import '../widgets/adaptive.dart';
 import '../widgets/screen_frame.dart';
@@ -238,16 +239,16 @@ class _ConcernOptionCard extends StatelessWidget {
   final Adaptive a;
   final VoidCallback onTap;
 
-  IconData _concernIcon(String id) {
+  String _concernSvg(String id) {
     switch (id) {
       case 'sensitive':
-        return Icons.health_and_safety_outlined;
+        return 'assets/icons/shield_check.svg';
       case 'uneven':
-        return Icons.tonality_rounded;
+        return 'assets/icons/scales.svg';
       case 'wrinkled':
-        return Icons.waves_rounded;
+        return 'assets/icons/wave_sine.svg';
       default:
-        return Icons.spa_outlined;
+        return 'assets/icons/sparkle.svg';
     }
   }
 
@@ -291,22 +292,10 @@ class _ConcernOptionCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Container(
-                          width: a.s(44),
-                          height: a.s(44),
-                          decoration: BoxDecoration(
-                            color: Brand.surfaceSubtle,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Brand.outlineLight,
-                              width: 1.4,
-                            ),
-                          ),
-                          child: Icon(
-                            _concernIcon(concern.id),
-                            color: Brand.primary,
-                            size: a.s(22),
-                          ),
+                        AppIconBadge(
+                          svgAsset: _concernSvg(concern.id),
+                          size: a.s(44),
+                          selected: false,
                         ),
                         SizedBox(width: a.s(14)),
                         Expanded(
