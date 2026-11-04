@@ -11,7 +11,7 @@ import 'package:runrabbit_kiosk/presentation/widgets/product_card.dart';
 class _FakeRepo implements ProductRepository {
   @override
   Future<List<Product>> loadAll() async =>
-      parseProducts(File('assets/data/products.json').readAsStringSync());
+      parseProducts(File('test/fixtures/products_dummy.json').readAsStringSync());
 }
 
 void main() {
@@ -60,7 +60,7 @@ void main() {
         tester.widgetList<ProductCard>(find.byType(ProductCard)).toList();
     expect(cards.length, greaterThanOrEqualTo(3));
 
-    // Verify that shelf location, matched tag, and prices are rendered
+    // Verify that matched tag, step, and prices are rendered, while shelf is not shown
     expect(find.text('MATCHED'), findsWidgets);
     expect(find.textContaining('STEP 1'), findsOneWidget);
     expect(find.textContaining('Shelf'), findsWidgets);

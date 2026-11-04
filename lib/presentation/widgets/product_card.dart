@@ -6,22 +6,26 @@ import '../../domain/product.dart' as domain;
 import '../../domain/recommendation_engine.dart';
 import 'adaptive.dart';
 
-String formatLkr(int value) {
+String formatLkr(int value, {bool from = false, Strings? s}) {
   final digits = value.toString();
   final out = StringBuffer();
   for (var i = 0; i < digits.length; i++) {
     if (i > 0 && (digits.length - i) % 3 == 0) out.write(',');
     out.write(digits[i]);
   }
-  return 'Rs. $out';
+  final formatted = out.toString();
+  if (s != null) {
+    return s.t(from ? 'priceFrom' : 'price', {'price': formatted});
+  }
+  return from ? 'From Rs. $formatted' : 'Rs. $formatted';
 }
 
 /// Product card mirroring the RunRabbit website product cards:
-/// - Distinctive custom K-Beauty cosmetic packaging illustration for each routine step
+/// - Real product image at the top with neutral fallback placeholder
 /// - Uppercase tracked brand name (e.g. BEAUTY OF JOSEON, AXIS-Y, LUMEA)
 /// - Bold product title with optimal hierarchy
-/// - Sale red promotional price with subtle original price strikethrough
-/// - In-store shelf location indicator & size badge
+/// - Promotional price with "From Rs." for multi-variant products
+/// - In-store shelf location indicator & size badge (hidden when empty)
 /// - Personalized routine reason & skin compatibility badges
 class ProductCard extends StatelessWidget {
   const ProductCard({
@@ -59,6 +63,12 @@ class ProductCard extends StatelessWidget {
     // Simulated original price before in-store promotion (+15%)
     final originalPrice = (p.price * 1.15).round();
 
+    final hasShelf = p.shelf.trim().isNotEmpty;
+    final hasSize = p.size.trim().isNotEmpty;
+    final shelfText = p.shelf.toLowerCase().contains('shelf')
+        ? p.shelf
+        : '${s.t('shelf')} ${p.shelf}';
+
     return Container(
       decoration: BoxDecoration(
         color: Brand.surface,
@@ -72,12 +82,13 @@ class ProductCard extends StatelessWidget {
           ),
         ],
       ),
+      clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // 1. Studio Product Visual Hero with K-Beauty Cosmetic Bottle
-          _CosmeticBottleVisual(product: p, s: s),
+          // 1. Product Image Hero
+          _ProductImageHero(product: p, s: s),
 
           // 2. Product Details Section
           Padding(
@@ -136,7 +147,7 @@ class ProductCard extends StatelessWidget {
                       textBaseline: TextBaseline.alphabetic,
                       children: [
                         Text(
-                          formatLkr(p.price),
+                          formatLkr(p.price, from: p.priceFrom, s: s),
                           style: TextStyle(
                             fontSize: a.s(19),
                             fontWeight: FontWeight.w900,
@@ -145,7 +156,7 @@ class ProductCard extends StatelessWidget {
                         ),
                         SizedBox(width: a.s(6)),
                         Text(
-                          formatLkr(originalPrice),
+                          formatLkr(originalPrice, s: s),
                           style: TextStyle(
                             fontSize: a.s(12),
                             fontWeight: FontWeight.w500,
@@ -163,64 +174,71 @@ class ProductCard extends StatelessWidget {
                 // Shelf & Size Badges Row (Standardized height)
                 SizedBox(
                   height: a.s(24),
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerLeft,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: a.s(7),
-                            vertical: a.s(3),
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF0FDF4),
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: const Color(0xFFDCFCE7)),
-                          ),
+                  child: (hasShelf || hasSize)
+                      ? FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
-                                Icons.pin_drop_rounded,
-                                size: a.s(12),
-                                color: const Color(0xFF166534),
-                              ),
-                              SizedBox(width: a.s(3)),
-                              Text(
-                                p.shelf,
-                                style: TextStyle(
-                                  fontSize: a.s(11),
-                                  fontWeight: FontWeight.w700,
-                                  color: const Color(0xFF166534),
+                              if (hasShelf) ...[
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: a.s(7),
+                                    vertical: a.s(3),
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF0FDF4),
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(
+                                      color: const Color(0xFFDCFCE7),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.pin_drop_rounded,
+                                        size: a.s(12),
+                                        color: const Color(0xFF166534),
+                                      ),
+                                      SizedBox(width: a.s(3)),
+                                      Text(
+                                        shelfText,
+                                        style: TextStyle(
+                                          fontSize: a.s(11),
+                                          fontWeight: FontWeight.w700,
+                                          color: const Color(0xFF166534),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
+                                if (hasSize) SizedBox(width: a.s(6)),
+                              ],
+                              if (hasSize)
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: a.s(6),
+                                    vertical: a.s(3),
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Brand.surfaceSubtle,
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    p.size,
+                                    style: TextStyle(
+                                      fontSize: a.s(11),
+                                      fontWeight: FontWeight.w600,
+                                      color: Brand.mutedText,
+                                    ),
+                                  ),
+                                ),
                             ],
                           ),
-                        ),
-                        SizedBox(width: a.s(6)),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: a.s(6),
-                            vertical: a.s(3),
-                          ),
-                          decoration: BoxDecoration(
-                            color: Brand.surfaceSubtle,
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Text(
-                            p.size,
-                            style: TextStyle(
-                              fontSize: a.s(11),
-                              fontWeight: FontWeight.w600,
-                              color: Brand.mutedText,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                        )
+                      : const SizedBox.shrink(),
                 ),
 
                 SizedBox(height: a.s(8)),
@@ -331,13 +349,12 @@ class ProductCard extends StatelessWidget {
   }
 }
 
-/// Custom K-Beauty Cosmetic Product Visual Hero:
-/// Draws a realistic, recognizable cosmetic container for each skincare step
-/// (Pump bottle for Cleanser, Dropper bottle for Serum, Cosmetic cream jar for Moisturiser,
-///  Squeeze tube for Sunscreen, Slender bottle for Toner) with studio reflections,
-///  routine step pill, and match status.
-class _CosmeticBottleVisual extends StatelessWidget {
-  const _CosmeticBottleVisual({
+/// Studio Product Image Hero:
+/// Shows the product image with BoxFit.contain on a white background, fixed aspect ratio,
+/// cacheWidth set from card width (using MediaQuery devicePixelRatio), gaplessPlayback true,
+/// and an errorBuilder that displays a neutral placeholder (icon on light background).
+class _ProductImageHero extends StatelessWidget {
+  const _ProductImageHero({
     required this.product,
     required this.s,
   });
@@ -345,20 +362,20 @@ class _CosmeticBottleVisual extends StatelessWidget {
   final domain.Product product;
   final Strings s;
 
-  Color _stepBg() {
+  String _stepNumber() {
     switch (product.step) {
       case domain.Step.cleanser:
-        return const Color(0xFFF0FDF4); // Sage botanical clean
+        return 'STEP 1';
       case domain.Step.toner:
-        return const Color(0xFFF0F9FF); // Fresh hydration sky
+        return 'STEP 2';
       case domain.Step.serum:
-        return const Color(0xFFFFFBEB); // Warm active amber
+        return 'STEP 3';
       case domain.Step.moisturiser:
-        return const Color(0xFFFFF1F2); // Rose peptide barrier
+        return 'STEP 4';
       case domain.Step.sunscreen:
-        return const Color(0xFFFEFCE8); // Sunshield bright gold
+        return 'STEP 5';
       case domain.Step.mask:
-        return const Color(0xFFFAF5FF); // Relaxing spa lavender
+        return 'MASK';
     }
   }
 
@@ -379,427 +396,149 @@ class _CosmeticBottleVisual extends StatelessWidget {
     }
   }
 
-  String _stepNumber() {
-    switch (product.step) {
-      case domain.Step.cleanser:
-        return 'STEP 1';
-      case domain.Step.toner:
-        return 'STEP 2';
-      case domain.Step.serum:
-        return 'STEP 3';
-      case domain.Step.moisturiser:
-        return 'STEP 4';
-      case domain.Step.sunscreen:
-        return 'STEP 5';
-      case domain.Step.mask:
-        return 'MASK';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final a = Adaptive.of(context);
-    final bg = _stepBg();
     final accent = _stepAccent();
 
-    return Container(
-      height: a.s(145),
-      margin: EdgeInsets.all(a.s(8)),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(Brand.radius - 2),
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            bg,
-            Colors.white.withValues(alpha: 0.6),
-            bg.withValues(alpha: 0.9),
+    return AspectRatio(
+      aspectRatio: 1.0,
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(Brand.cardRadius - 1),
+          ),
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Positioned.fill(
+              child: Padding(
+                padding: EdgeInsets.all(a.s(12)),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final dpr = MediaQuery.maybeDevicePixelRatioOf(context) ??
+                        MediaQuery.of(context).devicePixelRatio;
+                    final cardWidth = constraints.maxWidth.isFinite &&
+                            constraints.maxWidth > 0
+                        ? constraints.maxWidth
+                        : 300.0;
+                    final cacheWidth = (cardWidth * dpr).round().clamp(1, 2048);
+
+                    Widget placeholder() => Container(
+                          decoration: BoxDecoration(
+                            color: Brand.surfaceSubtle,
+                            borderRadius:
+                                BorderRadius.circular(Brand.radius - 2),
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.spa_outlined,
+                              size: a.s(36),
+                              color: Brand.mutedText.withValues(alpha: 0.4),
+                            ),
+                          ),
+                        );
+
+                    if (product.image.isEmpty) {
+                      return placeholder();
+                    }
+
+                    return Image.asset(
+                      product.image,
+                      fit: BoxFit.contain,
+                      gaplessPlayback: true,
+                      cacheWidth: cacheWidth,
+                      errorBuilder: (context, error, stackTrace) =>
+                          placeholder(),
+                    );
+                  },
+                ),
+              ),
+            ),
+
+            // Routine Step Pill (Top Left)
+            Positioned(
+              top: a.s(8),
+              left: a.s(8),
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: a.s(8),
+                  vertical: a.s(3.5),
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(Brand.pillRadius),
+                  border: Border.all(color: Brand.outlineLight),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x08000000),
+                      blurRadius: 4,
+                      offset: Offset(0, 1),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: a.s(6),
+                      height: a.s(6),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: accent,
+                      ),
+                    ),
+                    SizedBox(width: a.s(5)),
+                    Text(
+                      '${_stepNumber()} · ${s.step(product.step.name).toUpperCase()}',
+                      style: TextStyle(
+                        fontSize: a.s(9.5),
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.8,
+                        color: Brand.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // MATCHED Tag (Top Right)
+            Positioned(
+              top: a.s(8),
+              right: a.s(8),
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: a.s(8),
+                  vertical: a.s(3),
+                ),
+                decoration: BoxDecoration(
+                  color: Brand.discountBadgeBg,
+                  borderRadius: BorderRadius.circular(5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Brand.discountBadgeBg.withValues(alpha: 0.25),
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  'MATCHED',
+                  style: TextStyle(
+                    fontSize: a.s(9.5),
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.6,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Studio Pedestal Backdrop
-          Positioned(
-            top: a.s(14),
-            child: Container(
-              width: a.s(84),
-              height: a.s(84),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: 0.8),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.04),
-                    blurRadius: 16,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // Cosmetic Bottle Graphic
-          Padding(
-            padding: EdgeInsets.only(top: a.s(14)),
-            child: _buildBottleIllustration(product.step, a, accent),
-          ),
-
-          // Routine Step Pill (Top Left)
-          Positioned(
-            top: a.s(8),
-            left: a.s(8),
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: a.s(8),
-                vertical: a.s(3.5),
-              ),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(Brand.pillRadius),
-                border: Border.all(color: Brand.outlineLight),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x08000000),
-                    blurRadius: 4,
-                    offset: Offset(0, 1),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: a.s(6),
-                    height: a.s(6),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: accent,
-                    ),
-                  ),
-                  SizedBox(width: a.s(5)),
-                  Text(
-                    '${_stepNumber()} · ${s.step(product.step.name).toUpperCase()}',
-                    style: TextStyle(
-                      fontSize: a.s(9.5),
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.8,
-                      color: Brand.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // MATCHED Tag (Top Right)
-          Positioned(
-            top: a.s(8),
-            right: a.s(8),
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: a.s(8),
-                vertical: a.s(3),
-              ),
-              decoration: BoxDecoration(
-                color: Brand.discountBadgeBg,
-                borderRadius: BorderRadius.circular(5),
-                boxShadow: [
-                  BoxShadow(
-                    color: Brand.discountBadgeBg.withValues(alpha: 0.25),
-                    blurRadius: 4,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
-              ),
-              child: Text(
-                'MATCHED',
-                style: TextStyle(
-                  fontSize: a.s(9.5),
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.6,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
-  }
-
-  Widget _buildBottleIllustration(domain.Step step, Adaptive a, Color accent) {
-    switch (step) {
-      case domain.Step.cleanser:
-        // Foam Cleanser Pump Bottle
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: a.s(16),
-                  height: a.s(5),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF4A4A4A),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                Container(
-                  width: a.s(6),
-                  height: a.s(5),
-                  color: Colors.transparent,
-                ),
-              ],
-            ),
-            Container(
-              width: a.s(6),
-              height: a.s(6),
-              color: const Color(0xFF757575),
-            ),
-            Container(
-              width: a.s(18),
-              height: a.s(6),
-              decoration: BoxDecoration(
-                color: const Color(0xFFBDBDBD),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            // Cleanser Bottle Body
-            Container(
-              width: a.s(44),
-              height: a.s(62),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(a.s(8)),
-                border: Border.all(color: const Color(0xFFE0E0E0), width: 1.2),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.water_drop_outlined,
-                    size: a.s(18),
-                    color: accent,
-                  ),
-                  SizedBox(height: a.s(4)),
-                  Container(
-                    width: a.s(24),
-                    height: a.s(2),
-                    color: accent.withValues(alpha: 0.4),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-
-      case domain.Step.serum:
-        // Serum Dropper Pipette Bottle
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: a.s(12),
-              height: a.s(8),
-              decoration: BoxDecoration(
-                color: const Color(0xFF2C2C2E),
-                borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(a.s(6))),
-              ),
-            ),
-            Container(
-              width: a.s(20),
-              height: a.s(7),
-              decoration: BoxDecoration(
-                color: const Color(0xFFBFA054), // Elegant gold collar
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            // Glass Ampoule Bottle Body
-            Container(
-              width: a.s(42),
-              height: a.s(60),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFF9EE),
-                borderRadius: BorderRadius.circular(a.s(10)),
-                border: Border.all(color: const Color(0xFFFFDCA8), width: 1.2),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.colorize_rounded,
-                    size: a.s(18),
-                    color: accent,
-                  ),
-                  SizedBox(height: a.s(4)),
-                  Container(
-                    width: a.s(20),
-                    height: a.s(2),
-                    color: accent.withValues(alpha: 0.4),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-
-      case domain.Step.moisturiser:
-        // Cosmetic Cream Jar
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: a.s(12)),
-            Container(
-              width: a.s(56),
-              height: a.s(12),
-              decoration: BoxDecoration(
-                color: const Color(0xFFD4AF37), // Metallic brushed lid
-                borderRadius: BorderRadius.circular(4),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
-                    blurRadius: 4,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              width: a.s(54),
-              height: a.s(44),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(
-                  bottom: Radius.circular(a.s(12)),
-                ),
-                border: Border.all(color: const Color(0xFFE5E7EB), width: 1.2),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.spa_outlined,
-                  size: a.s(20),
-                  color: accent,
-                ),
-              ),
-            ),
-          ],
-        );
-
-      case domain.Step.sunscreen:
-        // Sunscreen Squeeze Tube
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: a.s(42),
-              height: a.s(3),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFDE047),
-                borderRadius: BorderRadius.circular(1),
-              ),
-            ),
-            Container(
-              width: a.s(42),
-              height: a.s(56),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Color(0xFFFEF08A), Colors.white],
-                ),
-                borderRadius: BorderRadius.circular(a.s(6)),
-                border: Border.all(color: const Color(0xFFFACC15), width: 1.2),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.wb_sunny_outlined,
-                  size: a.s(20),
-                  color: accent,
-                ),
-              ),
-            ),
-            Container(
-              width: a.s(26),
-              height: a.s(8),
-              decoration: BoxDecoration(
-                color: const Color(0xFFE5E7EB),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ],
-        );
-
-      default:
-        // Slender Bottle for Toners / Masks
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: a.s(18),
-              height: a.s(8),
-              decoration: BoxDecoration(
-                color: const Color(0xFF374151),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            Container(
-              width: a.s(40),
-              height: a.s(64),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(a.s(8)),
-                border: Border.all(color: const Color(0xFFE5E7EB), width: 1.2),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.waves_rounded,
-                  size: a.s(20),
-                  color: accent,
-                ),
-              ),
-            ),
-          ],
-        );
-    }
   }
 }

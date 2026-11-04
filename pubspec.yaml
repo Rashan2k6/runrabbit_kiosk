@@ -24,4 +24,5 @@ flutter:
     - assets/data/
     - assets/images/skin_types/
     - assets/images/concerns/
+    - assets/images/products/
     - assets/icons/

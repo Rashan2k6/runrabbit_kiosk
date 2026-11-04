@@ -39,6 +39,8 @@ const _en = <String, String>{
   'startOver': 'Start over',
   'seeResults': 'See results',
   'shelf': 'Find it at',
+  'price': 'Rs. {price}',
+  'priceFrom': 'From Rs. {price}',
   'patchTest':
       'Patch test any new product on a small area of skin first. If you have a skin condition or are pregnant, ask a doctor before trying new products.',
   'reasonSkin': 'Suitable for {skin} skin.',
@@ -78,6 +80,8 @@ const _en = <String, String>{
   'quizProgress': 'Question {n}',
   'yes': 'Yes',
   'no': 'No',
+  'quizHelper':
+      'Answer based on how your skin usually feels after cleansing.',
   'quiz.q1': 'Gets skin trouble after using rich creams',
   'quiz.q2': 'Visibly large pores',
   'quiz.q3': 'Have lots of blackheads and sebum',
@@ -126,6 +130,8 @@ const _si = <String, String>{
   'startOver': 'නැවත ආරම්භ කරන්න',
   'seeResults': 'ප්‍රතිඵල බලන්න',
   'shelf': 'ස්ථානය',
+  'price': 'රු. {price}', // TODO native speaker review
+  'priceFrom': 'රු. {price} සිට', // TODO native speaker review
   'patchTest':
       'නව නිෂ්පාදනයක් භාවිතයට පෙර සමේ කුඩා කොටසක පරීක්ෂා කරන්න. ඔබට සමේ රෝගයක් ඇත්නම් හෝ ගර්භණී නම් වෛද්‍යවරයකුගෙන් විමසන්න.',
   'reasonSkin': '{skin} සමට ගැළපේ.',
@@ -165,6 +171,8 @@ const _si = <String, String>{
   'quizProgress': '{n} වන ප්‍රශ්නය', // TODO native speaker review
   'yes': 'ඔව්', // TODO native speaker review
   'no': 'නැත', // TODO native speaker review
+  'quizHelper':
+      'මුහුණ සේදීමෙන් පසු සාමාන්‍යයෙන් ඔබේ සමට දැනෙන ආකාරය අනුව පිළිතුරු දෙන්න.', // TODO native speaker review
   'quiz.q1':
       'ඝන ක්‍රීම් භාවිතයෙන් පසු සමේ ගැටලු ඇති වේ', // TODO native speaker review
   'quiz.q2': 'විශාල වූ සිදුරු පැහැදිලිව පෙනේ', // TODO native speaker review

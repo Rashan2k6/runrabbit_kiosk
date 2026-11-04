@@ -12,7 +12,7 @@ import 'package:runrabbit_kiosk/presentation/widgets/skin_type_cards.dart';
 class _FakeRepo implements ProductRepository {
   @override
   Future<List<Product>> loadAll() async =>
-      parseProducts(File('assets/data/products.json').readAsStringSync());
+      parseProducts(File('test/fixtures/products_dummy.json').readAsStringSync());
 }
 
 void main() {

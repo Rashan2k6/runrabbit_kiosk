@@ -8,15 +8,19 @@ class Product {
     required this.brand,
     required this.step,
     required this.price,
-    required this.size,
+    this.priceFrom = false,
+    this.size = '',
     required this.inStock,
     required this.skinTypes,
     required this.concerns,
     required this.keyIngredients,
     required this.avoidSkinTypes,
-    required this.note,
-    required this.shelf,
-    required this.benefit,
+    this.note = const {},
+    this.shelf = '',
+    this.benefit = const {},
+    this.howTo = const {},
+    this.ingredients = '',
+    this.image = '',
   });
 
   final String id;
@@ -26,6 +30,9 @@ class Product {
 
   /// Price in LKR.
   final int price;
+
+  /// True when the product has several sizes/prices and price is lowest.
+  final bool priceFrom;
   final String size;
   final bool inStock;
 
@@ -46,7 +53,17 @@ class Product {
   /// One line benefit by language code.
   final Map<String, String> benefit;
 
+  /// How to use instructions by language code (`en`, `si`).
+  final Map<String, String> howTo;
+
+  /// Full ingredients list.
+  final String ingredients;
+
+  /// Asset path for product image.
+  final String image;
+
   String benefitFor(String lang) => benefit[lang] ?? benefit['en'] ?? '';
+  String howToFor(String lang) => howTo[lang] ?? howTo['en'] ?? '';
   String? noteFor(String lang) {
     final text = note[lang] ?? note['en'];
     return (text == null || text.isEmpty) ? null : text;
@@ -55,23 +72,43 @@ class Product {
   factory Product.fromJson(Map<String, dynamic> j) {
     Map<String, String> strings(Object? v) => v == null
         ? const {}
-        : (v as Map).map((k, val) => MapEntry(k as String, val as String));
+        : (v as Map).map((k, val) => MapEntry(k.toString(), val.toString()));
+
     return Product(
-      id: j['id'] as String,
-      name: j['name'] as String,
-      brand: j['brand'] as String,
-      step: Step.values.byName(j['step'] as String),
-      price: (j['price'] as num).toInt(),
-      size: j['size'] as String,
-      inStock: j['inStock'] as bool,
-      skinTypes: List<String>.from(j['skinTypes'] as List),
-      concerns: (j['concerns'] as Map)
-          .map((k, v) => MapEntry(k as String, (v as num).toInt())),
-      keyIngredients: List<String>.from(j['keyIngredients'] as List),
-      avoidSkinTypes: List<String>.from(j['avoidSkinTypes'] as List),
+      id: (j['id'] as String?) ?? '',
+      name: (j['name'] as String?) ?? '',
+      brand: (j['brand'] as String?) ?? '',
+      step: j['step'] is String
+          ? Step.values.firstWhere(
+              (s) => s.name == j['step'],
+              orElse: () => Step.cleanser,
+            )
+          : Step.cleanser,
+      price: (j['price'] as num?)?.toInt() ?? 0,
+      priceFrom: (j['priceFrom'] as bool?) ?? false,
+      size: (j['size'] as String?) ?? '',
+      inStock: (j['inStock'] as bool?) ?? true,
+      skinTypes: (j['skinTypes'] as List?)?.map((e) => e.toString()).toList() ??
+          const [],
+      concerns: j['concerns'] == null
+          ? const {}
+          : (j['concerns'] as Map).map(
+              (k, v) => MapEntry(k.toString(), (v as num).toInt()),
+            ),
+      keyIngredients: (j['keyIngredients'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      avoidSkinTypes: (j['avoidSkinTypes'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
       note: strings(j['note']),
-      shelf: j['shelf'] as String,
+      shelf: (j['shelf'] as String?) ?? '',
       benefit: strings(j['benefit']),
+      howTo: strings(j['howTo']),
+      ingredients: (j['ingredients'] as String?) ?? '',
+      image: (j['image'] as String?) ?? '',
     );
   }
 }

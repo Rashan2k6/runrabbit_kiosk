@@ -34,7 +34,7 @@ void main() {
 
   setUpAll(() {
     products =
-        parseProducts(File('assets/data/products.json').readAsStringSync());
+        parseProducts(File('test/fixtures/products_dummy.json').readAsStringSync());
   });
 
   RecommendationResult run(Set<Step> steps,

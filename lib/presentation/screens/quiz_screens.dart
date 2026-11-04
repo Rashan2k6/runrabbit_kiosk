@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../app/brand.dart';
 import '../../app/strings.dart';
@@ -30,128 +31,302 @@ class QuizQuestionScreen extends StatelessWidget {
       title: s.t('quizTitle'),
       subtitle: s.t('quizSubtitle'),
       child: Center(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: a.s(640)),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: a.s(24),
-                    vertical: a.s(24),
-                  ),
-                  decoration: BoxDecoration(
-                    color: Brand.surface,
-                    borderRadius: BorderRadius.circular(Brand.cardRadius),
-                    border: Border.all(color: Brand.outline, width: 1.4),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color(0x06000000),
-                        blurRadius: 10,
-                        offset: Offset(0, 3),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1000),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final availableHeight = constraints.maxHeight;
+              final spacing = (availableHeight * 0.035).clamp(20.0, 28.0);
+
+              Widget buildCard() {
+                return LayoutBuilder(
+                  builder: (context, cardConstraints) {
+                    final cardHeight = cardConstraints.maxHeight;
+                    final questionFontSize =
+                        (cardHeight * 0.105).clamp(34.0, 46.0);
+                    final pillGap = (cardHeight * 0.035).clamp(12.0, 18.0);
+                    final iconGap = (cardHeight * 0.045).clamp(14.0, 22.0);
+
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Brand.surface,
+                        borderRadius: BorderRadius.circular(28),
+                        border: Border.all(
+                            color: const Color(0xFFEAEAEE), width: 1.2),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0x0C000000),
+                            blurRadius: 24,
+                            offset: Offset(0, 6),
+                            spreadRadius: -2,
+                          ),
+                          BoxShadow(
+                            color: Color(0x04000000),
+                            blurRadius: 8,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: a.s(12),
-                          vertical: a.s(4),
-                        ),
-                        decoration: BoxDecoration(
-                          color: Brand.surfaceSubtle,
-                          borderRadius: BorderRadius.circular(Brand.pillRadius),
-                          border: Border.all(color: Brand.outlineLight),
-                        ),
-                        child: Text(
-                          s.t('quizProgress', {'n': '$questionNumber'}),
-                          style: TextStyle(
-                            fontSize: a.s(12),
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.3,
-                            color: Brand.mutedText,
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: a.s(36).clamp(24.0, 60.0),
+                            vertical: 16.0,
+                          ),
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.center,
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: math.max(
+                                    280.0, cardConstraints.maxWidth - 64.0),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  // White "QUESTION N" pill matching reference image
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          a.s(18).clamp(14.0, 22.0),
+                                      vertical: a.s(7).clamp(6.0, 9.0),
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(
+                                          Brand.pillRadius),
+                                      border: Border.all(
+                                        color: const Color(0xFFE2E2E8),
+                                        width: 1.2,
+                                      ),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: Color(0x05000000),
+                                          blurRadius: 6,
+                                          offset: Offset(0, 1),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Text(
+                                      s
+                                          .t('quizProgress',
+                                              {'n': '$questionNumber'})
+                                          .toUpperCase(),
+                                      style: TextStyle(
+                                        fontSize:
+                                            a.s(13).clamp(12.0, 15.0),
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: 1.8,
+                                        color: const Color(0xFF6E6E73),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: pillGap),
+                                  // Dark circle with white question mark & warm glow
+                                  Container(
+                                    width: 48,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF2C2C2E),
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Brand.accent
+                                              .withValues(alpha: 0.32),
+                                          blurRadius: 14,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                        const BoxShadow(
+                                          color: Color(0x18000000),
+                                          blurRadius: 6,
+                                          offset: Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.question_mark_rounded,
+                                        color: Colors.white,
+                                        size: 24,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: iconGap),
+                                  // Bold question text
+                                  Text(
+                                    questionText,
+                                    textAlign: TextAlign.center,
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: questionFontSize,
+                                      fontWeight: FontWeight.w800,
+                                      height: 1.24,
+                                      letterSpacing: -0.6,
+                                      color: const Color(0xFF141414),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                      SizedBox(height: a.s(16)),
-                      Text(
-                        questionText,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: a.s(22),
-                          fontWeight: FontWeight.w800,
-                          height: 1.3,
-                          letterSpacing: -0.3,
-                          color: Brand.primary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: a.s(16)),
-                Row(
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: math.max(64.0, a.s(64)),
-                        child: OutlinedButton(
-                          onPressed: () => flow.answerQuizQuestion(false),
-                          style: OutlinedButton.styleFrom(
+                    );
+                  },
+                );
+              }
+
+              Widget buildButtons() {
+                return LayoutBuilder(
+                  builder: (context, buttonConstraints) {
+                    final buttonHeight = buttonConstraints.maxHeight;
+                    final buttonFontSize =
+                        (buttonHeight * 0.22).clamp(26.0, 30.0);
+                    final minButtonHeight = math.min(96.0, buttonHeight);
+
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: _QuizAnswerButton(
+                            label: s.t('no'),
                             backgroundColor: Brand.surface,
-                            side: const BorderSide(
-                              color: Brand.outline,
-                              width: 1.8,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(Brand.cardRadius),
-                            ),
-                          ),
-                          child: Text(
-                            s.t('no'),
-                            style: TextStyle(
-                              fontSize: a.s(18),
-                              fontWeight: FontWeight.w800,
-                              color: Brand.primary,
-                              letterSpacing: 0.5,
-                            ),
+                            foregroundColor: Brand.primary,
+                            borderColor: const Color(0xFFE2E2E8),
+                            fontSize: buttonFontSize,
+                            minHeight: minButtonHeight,
+                            onTap: () => flow.answerQuizQuestion(false),
                           ),
                         ),
-                      ),
-                    ),
-                    SizedBox(width: a.s(14)),
-                    Expanded(
-                      child: SizedBox(
-                        height: math.max(64.0, a.s(64)),
-                        child: FilledButton(
-                          onPressed: () => flow.answerQuizQuestion(true),
-                          style: FilledButton.styleFrom(
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: _QuizAnswerButton(
+                            label: s.t('yes'),
                             backgroundColor: Brand.primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(Brand.cardRadius),
-                            ),
-                          ),
-                          child: Text(
-                            s.t('yes'),
-                            style: TextStyle(
-                              fontSize: a.s(18),
-                              fontWeight: FontWeight.w800,
-                              color: Brand.onPrimary,
-                              letterSpacing: 0.5,
-                            ),
+                            foregroundColor: Brand.onPrimary,
+                            fontSize: buttonFontSize,
+                            minHeight: minButtonHeight,
+                            onTap: () => flow.answerQuizQuestion(true),
                           ),
                         ),
-                      ),
-                    ),
-                  ],
+                      ],
+                    );
+                  },
+                );
+              }
+
+              final helperLine = Text(
+                s.t('quizHelper'),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: a.s(16.5).clamp(16.0, 18.0),
+                  fontWeight: FontWeight.w500,
+                  color: Brand.mutedText,
+                  height: 1.3,
+                ),
+              );
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    flex: 50,
+                    child: buildCard(),
+                  ),
+                  SizedBox(height: spacing),
+                  Expanded(
+                    flex: 25,
+                    child: buildButtons(),
+                  ),
+                  SizedBox(height: spacing),
+                  helperLine,
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _QuizAnswerButton extends StatefulWidget {
+  const _QuizAnswerButton({
+    required this.label,
+    required this.backgroundColor,
+    required this.foregroundColor,
+    this.borderColor,
+    required this.fontSize,
+    required this.minHeight,
+    required this.onTap,
+  });
+
+  final String label;
+  final Color backgroundColor;
+  final Color foregroundColor;
+  final Color? borderColor;
+  final double fontSize;
+  final double minHeight;
+  final VoidCallback onTap;
+
+  @override
+  State<_QuizAnswerButton> createState() => _QuizAnswerButtonState();
+}
+
+class _QuizAnswerButtonState extends State<_QuizAnswerButton> {
+  bool _isPressed = false;
+
+  void _onTap() {
+    HapticFeedback.selectionClick();
+    widget.onTap();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedScale(
+      scale: _isPressed ? 0.97 : 1.0,
+      duration: const Duration(milliseconds: 90),
+      curve: Curves.easeOutCubic,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: (_) => setState(() => _isPressed = true),
+        onTapUp: (_) => setState(() => _isPressed = false),
+        onTapCancel: () => setState(() => _isPressed = false),
+        onTap: _onTap,
+        child: Semantics(
+          button: true,
+          label: widget.label,
+          child: Container(
+            constraints: BoxConstraints(minHeight: widget.minHeight),
+            decoration: BoxDecoration(
+              color: widget.backgroundColor,
+              borderRadius: BorderRadius.circular(28),
+              border: widget.borderColor != null
+                  ? Border.all(color: widget.borderColor!, width: 1.5)
+                  : null,
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x08000000),
+                  blurRadius: 10,
+                  offset: Offset(0, 3),
                 ),
               ],
+            ),
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Text(
+              widget.label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: widget.fontSize,
+                fontWeight: FontWeight.w800,
+                color: widget.foregroundColor,
+                letterSpacing: 0.5,
+              ),
             ),
           ),
         ),
