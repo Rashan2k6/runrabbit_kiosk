@@ -262,4 +262,114 @@ void main() {
       );
     }
   });
+
+  test('excludes pimple patches, nose packs, and face masks from routine suggestions', () {
+    final testProds = [
+      product(id: 'regular-serum', price: 2000),
+      const Product(
+        id: 'patch-1',
+        name: 'Spot Care Pimple Patch',
+        brand: 'TestBrand',
+        step: Step.serum,
+        price: 800,
+        size: '24 patches',
+        inStock: true,
+        skinTypes: ['all'],
+        concerns: {'acne': 3},
+        keyIngredients: ['Hydrocolloid'],
+        avoidSkinTypes: [],
+      ),
+      const Product(
+        id: 'mask-1',
+        name: 'Hydrating Face Mask Sheet',
+        brand: 'TestBrand',
+        step: Step.toner,
+        price: 500,
+        size: '1 sheet',
+        inStock: true,
+        skinTypes: ['all'],
+        concerns: {'acne': 3},
+        keyIngredients: ['Ceramides'],
+        avoidSkinTypes: [],
+      ),
+      const Product(
+        id: 'nose-pack-1',
+        name: 'Pore Nose Pack',
+        brand: 'TestBrand',
+        step: Step.cleanser,
+        price: 600,
+        size: '1 pack',
+        inStock: true,
+        skinTypes: ['all'],
+        concerns: {'pores': 3},
+        keyIngredients: ['Charcoal'],
+        avoidSkinTypes: [],
+      ),
+    ];
+
+    final result = RecommendationEngine.recommend(
+      products: testProds,
+      skinType: 'oily',
+      concerns: {'acne', 'pores'},
+      steps: {Step.cleanser, Step.toner, Step.serum},
+    );
+
+    expect(result.recommendations.any((r) => r.product.id == 'patch-1'), isFalse);
+    expect(result.recommendations.any((r) => r.product.id == 'mask-1'), isFalse);
+    expect(result.recommendations.any((r) => r.product.id == 'nose-pack-1'), isFalse);
+  });
+
+  test('multi-step routines harmonize and prioritize the same brand', () {
+    final testProds = [
+      // Brand A has full routine coverage
+      const Product(
+        id: 'a-cleanse',
+        name: 'Brand A Cleanser',
+        brand: 'Brand A',
+        step: Step.cleanser,
+        price: 2000,
+        inStock: true,
+        skinTypes: ['all'],
+        concerns: {'acne': 2},
+        keyIngredients: [],
+        avoidSkinTypes: [],
+      ),
+      const Product(
+        id: 'a-serum',
+        name: 'Brand A Serum',
+        brand: 'Brand A',
+        step: Step.serum,
+        price: 3000,
+        inStock: true,
+        skinTypes: ['all'],
+        concerns: {'acne': 2},
+        keyIngredients: [],
+        avoidSkinTypes: [],
+      ),
+      // Brand B only has serum with slightly higher concern score
+      const Product(
+        id: 'b-serum',
+        name: 'Brand B Serum',
+        brand: 'Brand B',
+        step: Step.serum,
+        price: 3000,
+        inStock: true,
+        skinTypes: ['all'],
+        concerns: {'acne': 3},
+        keyIngredients: [],
+        avoidSkinTypes: [],
+      ),
+    ];
+
+    final result = RecommendationEngine.recommend(
+      products: testProds,
+      skinType: 'oily',
+      concerns: {'acne'},
+      steps: {Step.cleanser, Step.serum},
+    );
+
+    // Both cleanser and serum should come from Brand A to keep routine consistent
+    expect(result.recommendations.length, 2);
+    expect(result.recommendations.every((r) => r.product.brand == 'Brand A'), isTrue);
+  });
 }

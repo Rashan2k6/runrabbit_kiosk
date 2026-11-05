@@ -80,17 +80,16 @@ const _en = <String, String>{
   'quizProgress': 'Question {n}',
   'yes': 'Yes',
   'no': 'No',
-  'quizHelper':
-      'Answer based on how your skin usually feels after cleansing.',
-  'quiz.q1': 'Gets skin trouble after using rich creams',
-  'quiz.q2': 'Visibly large pores',
-  'quiz.q3': 'Have lots of blackheads and sebum',
-  'quiz.q4': 'Hair gets greasy quickly',
-  'quiz.q5': 'Dry U-zone area (cheeks and chin)',
-  'quiz.q6': 'Skin feels tight after cleansing',
-  'quiz.q7': 'Oily T-zone area (forehead, nose)',
-  'quiz.q8': 'Often gets flaky skin',
-  'quiz.q9': 'Skin is usually dry and tight',
+  'quizHelper': 'Answer based on how your skin usually feels after cleansing.',
+  'quiz.q1': 'Does your skin get irritated when you use thick, heavy creams?',
+  'quiz.q2': 'Do you have visibly large pores?',
+  'quiz.q3': 'Do you have lots of blackheads and excess oil?',
+  'quiz.q4': 'Does your hair get greasy quickly?',
+  'quiz.q5': 'Do your cheeks and chin (U-zone) feel dry?',
+  'quiz.q6': 'Does your skin feel tight after cleansing?',
+  'quiz.q7': 'Does your forehead and nose (T-zone) get oily?',
+  'quiz.q8': 'Does your skin often get flaky?',
+  'quiz.q9': 'Does your skin usually feel dry and tight?',
   'quizConcernTitle': "What's your main skin concern?",
   'quizConcernSubtitle': 'Choose one skin concern that bothers you the most',
   'quiz.concern.sensitive': 'Sensitive',
@@ -174,16 +173,22 @@ const _si = <String, String>{
   'quizHelper':
       'මුහුණ සේදීමෙන් පසු සාමාන්‍යයෙන් ඔබේ සමට දැනෙන ආකාරය අනුව පිළිතුරු දෙන්න.', // TODO native speaker review
   'quiz.q1':
-      'ඝන ක්‍රීම් භාවිතයෙන් පසු සමේ ගැටලු ඇති වේ', // TODO native speaker review
-  'quiz.q2': 'විශාල වූ සිදුරු පැහැදිලිව පෙනේ', // TODO native speaker review
-  'quiz.q3': 'කළු ලප සහ අධික තෙල් සහිත බව ඇත', // TODO native speaker review
-  'quiz.q4': 'හිසකෙස් ඉක්මනින් තෙල් සහිත වේ', // TODO native speaker review
-  'quiz.q5': 'U-කලාපය (කම්මුල් සහ නිකට) වියළිය', // TODO native speaker review
+      'ඝන, බරැති මොයිස්චරයිසර් භාවිතා කරන විට ඔබේ සමේ බිබිලි හෝ කෝපවීම් ඇති වෙනවාද?', // TODO native speaker review
+  'quiz.q2':
+      'ඔබේ මුහුණේ සිදුරු පැහැදිලිව ලොකුවට පෙනෙනවාද?', // TODO native speaker review
+  'quiz.q3':
+      'ඔබට කළු ලප සහ අධික තෙල් සහිත බවක් තිබෙනවාද?', // TODO native speaker review
+  'quiz.q4':
+      'ඔබේ හිසකෙස් ඉක්මනින් තෙල් සහිත වෙනවාද?', // TODO native speaker review
+  'quiz.q5':
+      'ඔබේ කම්මුල් සහ නිකට (U-කලාපය) වියළි බවක් දැනෙනවාද?', // TODO native speaker review
   'quiz.q6':
-      'මුහුණ සේදීමෙන් පසු සම තද වූ බවක් දැනේ', // TODO native speaker review
-  'quiz.q7': 'තෙල් සහිත T-කලාපය (නළල, නාසය)', // TODO native speaker review
-  'quiz.q8': 'බොහෝ විට සමේ පොතු ගැලවී යයි', // TODO native speaker review
-  'quiz.q9': 'සම සාමාන්‍යයෙන් වියළි හා තදයි', // TODO native speaker review
+      'මුහුණ සේදීමෙන් පසු ඔබේ සම තද වූ බවක් දැනෙනවාද?', // TODO native speaker review
+  'quiz.q7':
+      'ඔබේ නළල සහ නාසය (T-කලාපය) තෙල් සහිත වෙනවාද?', // TODO native speaker review
+  'quiz.q8': 'ඔබේ සමේ බොහෝ විට පොතු ගැලවී යනවාද?', // TODO native speaker review
+  'quiz.q9':
+      'ඔබේ සම සාමාන්‍යයෙන් වියළි හා තද බවක් දැනෙනවාද?', // TODO native speaker review
   'quizConcernTitle':
       'ඔබේ ප්‍රධාන සමේ ගැටලුව කුමක්ද?', // TODO native speaker review
   'quizConcernSubtitle':
@@ -209,10 +214,8 @@ const _si = <String, String>{
   'continue': 'ඉදිරියට යන්න', // TODO native speaker review
   'chooseDifferentSkin':
       'වෙනත් සමේ වර්ගයක් තෝරන්න', // TODO native speaker review
-  'idleWarningTitle':
-      'ඔබ තවමත් මෙහි සිටිනවාද?', // TODO native speaker review
+  'idleWarningTitle': 'ඔබ තවමත් මෙහි සිටිනවාද?', // TODO native speaker review
   'idleWarningBody':
       'ඔබගේ තේරීම් තත්පර {n}කින් ඉවත් කෙරේ.', // TODO native speaker review
-  'idleWarningStay':
-      'මම තවමත් මෙහි සිටිමි', // TODO native speaker review
+  'idleWarningStay': 'මම තවමත් මෙහි සිටිමි', // TODO native speaker review
 };

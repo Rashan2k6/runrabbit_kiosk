@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../app/brand.dart';
 import '../../app/strings.dart';
+import '../../widgets/brand_logo.dart';
 import '../state/flow_state.dart';
 import '../widgets/adaptive.dart';
 
@@ -37,15 +38,10 @@ class IdleScreen extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          Brand.name,
+                        BrandLogo(
+                          fontSize: a.s(60),
+                          letterSpacing: 4.0,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: a.s(60),
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 4.0,
-                            color: Brand.primary,
-                          ),
                         ),
                         SizedBox(height: a.s(16)),
                         Text(

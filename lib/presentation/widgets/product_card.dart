@@ -24,7 +24,7 @@ String formatLkr(int value, {bool from = false, Strings? s}) {
 /// - Real product image at the top with neutral fallback placeholder
 /// - Uppercase tracked brand name (e.g. BEAUTY OF JOSEON, AXIS-Y, LUMEA)
 /// - Bold product title with optimal hierarchy
-/// - Promotional price with "From Rs." for multi-variant products
+/// - Product price with "From Rs." for multi-variant products
 /// - In-store shelf location indicator & size badge (hidden when empty)
 /// - Personalized routine reason & skin compatibility badges
 class ProductCard extends StatelessWidget {
@@ -59,9 +59,6 @@ class ProductCard extends StatelessWidget {
           'list': rec.matchedConcerns.take(3).map(s.concern).join(', '),
         }),
     ].join(' ');
-
-    // Simulated original price before in-store promotion (+15%)
-    final originalPrice = (p.price * 1.15).round();
 
     final hasShelf = p.shelf.trim().isNotEmpty;
     final hasSize = p.size.trim().isNotEmpty;
@@ -135,36 +132,19 @@ class ProductCard extends StatelessWidget {
                 ),
                 SizedBox(height: a.s(8)),
 
-                // Price Row (Standardized height)
+                // Price (Standardized height)
                 SizedBox(
                   height: a.s(26),
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: [
-                        Text(
-                          formatLkr(p.price, from: p.priceFrom, s: s),
-                          style: TextStyle(
-                            fontSize: a.s(19),
-                            fontWeight: FontWeight.w900,
-                            color: Brand.saleRed,
-                          ),
-                        ),
-                        SizedBox(width: a.s(6)),
-                        Text(
-                          formatLkr(originalPrice, s: s),
-                          style: TextStyle(
-                            fontSize: a.s(12),
-                            fontWeight: FontWeight.w500,
-                            color: Brand.strikethroughPrice,
-                            decoration: TextDecoration.lineThrough,
-                          ),
-                        ),
-                      ],
+                    child: Text(
+                      formatLkr(p.price, from: p.priceFrom, s: s),
+                      style: TextStyle(
+                        fontSize: a.s(18),
+                        fontWeight: FontWeight.w800,
+                        color: Brand.primary,
+                      ),
                     ),
                   ),
                 ),

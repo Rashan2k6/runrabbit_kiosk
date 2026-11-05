@@ -11,6 +11,7 @@ import '../presentation/screens/quiz_screens.dart';
 import '../presentation/screens/results_screen.dart';
 import '../presentation/state/flow_state.dart';
 import '../presentation/widgets/adaptive.dart';
+import '../widgets/brand_logo.dart';
 import 'brand.dart';
 import 'strings.dart';
 import 'theme.dart';
@@ -365,14 +366,10 @@ class _IdleWarningOverlay extends StatelessWidget {
                             color: Brand.accent,
                           ),
                           SizedBox(width: a.s(6)),
-                          Text(
-                            Brand.name,
-                            style: TextStyle(
-                              fontSize: a.s(11),
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 2.0,
-                              color: Brand.mutedText,
-                            ),
+                          BrandLogo(
+                            fontSize: a.s(11),
+                            letterSpacing: 2.0,
+                            color: Brand.mutedText,
                           ),
                         ],
                       ),

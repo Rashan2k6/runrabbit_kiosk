@@ -132,7 +132,8 @@ void main() {
     expect(find.text('From Rs. 5,990'), findsOneWidget);
   });
 
-  testWidgets('shows standard "Rs." when priceFrom is false', (tester) async {
+  testWidgets('shows standard "Rs." when priceFrom is false and no discount/strikethrough price',
+      (tester) async {
     const singlePriceProd = Product(
       id: 'single-price-prod',
       name: 'A-Clear Soothing Serum',
@@ -152,5 +153,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Rs. 5,990'), findsOneWidget);
+    // Should only show the exact price and not any simulated strikethrough/discounted price
+    expect(find.text('Rs. 6,889'), findsNothing);
   });
 }

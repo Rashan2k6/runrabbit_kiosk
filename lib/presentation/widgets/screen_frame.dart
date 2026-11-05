@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../app/brand.dart';
 import '../../app/strings.dart';
+import '../../widgets/brand_logo.dart';
 import '../state/flow_state.dart';
 import 'adaptive.dart';
 
@@ -74,14 +75,9 @@ class ScreenFrame extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        Brand.name,
-                        style: TextStyle(
-                          fontSize: a.s(22),
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 3.5,
-                          color: Brand.primary,
-                        ),
+                      BrandLogo(
+                        fontSize: a.s(22),
+                        letterSpacing: 3.5,
                       ),
                       Text(
                         Brand.tagline,
