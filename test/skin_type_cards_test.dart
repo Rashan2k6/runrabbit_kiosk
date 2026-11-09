@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:runrabbit_kiosk/app/kiosk_app.dart';
 import 'package:runrabbit_kiosk/app/strings.dart';
 import 'package:runrabbit_kiosk/data/product_repository.dart';
-import 'package:runrabbit_kiosk/domain/options.dart';
 import 'package:runrabbit_kiosk/domain/product.dart';
+import 'package:runrabbit_kiosk/presentation/screens/results_screen.dart';
 import 'package:runrabbit_kiosk/presentation/widgets/skin_type_cards.dart';
 
 class _FakeRepo implements ProductRepository {
@@ -19,7 +19,7 @@ void main() {
   const s = Strings('en');
 
   testWidgets(
-      'SkinTypeScreen displays five horizontal cards with round pictures and labels',
+      'SkinTypeScreen displays four base cards with round pictures and radio badges, and separate sensitive toggle card',
       (tester) async {
     tester.view.physicalSize = const Size(1280, 800);
     tester.view.devicePixelRatio = 1;
@@ -34,36 +34,41 @@ void main() {
 
     expect(find.byType(SkinTypeCards), findsOneWidget);
 
-    // Verify all 5 skin types are present
-    for (final skin in skinTypes) {
-      expect(find.text(s.skin(skin.id)), findsOneWidget);
-    }
+    // Verify the 4 base skin types are present
+    expect(find.text(s.skin('oily')), findsOneWidget);
+    expect(find.text(s.skin('dry')), findsOneWidget);
+    expect(find.text(s.skin('combination')), findsOneWidget);
+    expect(find.text(s.skin('normal')), findsOneWidget);
 
-    // Verify all 5 skin type subtitles are present in English
+    // Verify all 4 base skin type subtitles are present in English
     expect(find.text('Prone to shine throughout the day'), findsOneWidget);
     expect(find.text('Feels tight, rough or flaky'), findsOneWidget);
     expect(find.text('Oily T-zone, normal cheeks'), findsOneWidget);
-    expect(find.text(s.t('skinSensitiveHint')), findsOneWidget);
     expect(find.text('Balanced moisture and comfort'), findsOneWidget);
 
-    // Verify circular cropped images exist
-    expect(find.byType(ClipOval), findsNWidgets(5));
+    // Verify 4 circular cropped illustrated avatars exist for the base types
+    expect(find.byType(ClipOval), findsNWidgets(4));
 
-    // Tap one of the cards (e.g. combination) – no longer auto-advances
+    // Verify the separate Sensitive toggle card exists with title, desc, hint, and switch
+    expect(find.text(s.t('skinSensitiveTitle')), findsOneWidget);
+    expect(find.text(s.t('skinSensitiveDesc')), findsOneWidget);
+    expect(find.text(s.t('skinSensitiveHint')), findsOneWidget);
+    expect(find.byType(Switch), findsOneWidget);
+
+    // Tap combination card to pick base
     await tester.tap(find.text(s.skin('combination')));
     await tester.pumpAndSettle();
 
-    // Still on skin screen; must tap Continue to advance
+    // Tap Continue to advance to concerns
     expect(find.text(s.t('skinTitle')), findsOneWidget);
     await tester.tap(find.text(s.t('continue')));
     await tester.pumpAndSettle();
 
-    // Now on concerns screen
     expect(find.text(s.t('concernsTitle')), findsOneWidget);
   });
 
   testWidgets(
-      'all five skin type cards have equal heights, aligned avatars, and aligned radio buttons in Sinhala',
+      'four base cards have equal heights, aligned avatars, and aligned radio buttons in landscape',
       (tester) async {
     tester.view.physicalSize = const Size(1280, 800);
     tester.view.devicePixelRatio = 1;
@@ -83,69 +88,152 @@ void main() {
 
     expect(find.byType(SkinTypeCards), findsOneWidget);
 
-    // Get the rects of the 5 cards
-    final cardsFinder = find.descendant(
-      of: find.byType(SkinTypeCards),
-      matching: find.byType(InkWell),
-    );
-    expect(cardsFinder, findsNWidgets(6)); // 5 skin cards + 1 quiz helper card
-
-    final cardRects = <Rect>[];
-    for (var i = 0; i < 5; i++) {
-      cardRects.add(tester.getRect(cardsFinder.at(i)));
-    }
-
-    // Verify all 5 cards have the exact same height and aligned top & bottom edges
-    final expectedHeight = cardRects.first.height;
-    final expectedTop = cardRects.first.top;
-    final expectedBottom = cardRects.first.bottom;
-
-    for (var i = 1; i < cardRects.length; i++) {
-      expect(cardRects[i].height, closeTo(expectedHeight, 0.5),
-          reason: 'Card $i height should match card 0');
-      expect(cardRects[i].top, closeTo(expectedTop, 0.5),
-          reason: 'Card $i top edge should align with card 0');
-      expect(cardRects[i].bottom, closeTo(expectedBottom, 0.5),
-          reason: 'Card $i bottom edge should align with card 0');
-    }
-
-    // Verify avatars are horizontally aligned along the same vertical position
+    // Verify 4 base avatars
     final avatarsFinder = find.descendant(
       of: find.byType(SkinTypeCards),
       matching: find.byType(ClipOval),
     );
-    expect(avatarsFinder, findsNWidgets(5));
+    expect(avatarsFinder, findsNWidgets(4));
+
     final avatarFirstTop = tester.getRect(avatarsFinder.first).top;
-    for (var i = 1; i < 5; i++) {
+    for (var i = 1; i < 4; i++) {
       expect(tester.getRect(avatarsFinder.at(i)).top, closeTo(avatarFirstTop, 0.5),
           reason: 'Avatar $i should align horizontally with avatar 0');
     }
 
-    // Verify radio indicators are aligned along the same bottom line
+    // Verify 4 radio indicators on the 4 base cards
     final radioFinders = find.descendant(
       of: find.byType(SkinTypeCards),
       matching: find.byWidgetPredicate((widget) {
         if (widget is AnimatedContainer &&
             widget.decoration is BoxDecoration &&
             (widget.decoration as BoxDecoration).shape == BoxShape.circle) {
-          // Radios have circle shape and check icon or null child
-          return widget.child is Icon || widget.child == null;
+          final box = widget.decoration as BoxDecoration;
+          // Radios have a border; AppIconBadge does not have a border
+          return box.border != null;
         }
         return false;
       }),
     );
-    expect(radioFinders, findsNWidgets(5));
+    expect(radioFinders, findsNWidgets(4));
+
     final radioFirstBottom = tester.getRect(radioFinders.first).bottom;
-    for (var i = 1; i < 5; i++) {
+    for (var i = 1; i < 4; i++) {
       expect(tester.getRect(radioFinders.at(i)).bottom, closeTo(radioFirstBottom, 0.5),
           reason: 'Radio indicator $i should align horizontally with radio 0');
     }
 
-    // Verify all 5 subtitles are present in Sinhala
-    expect(find.text('දවස පුරා තෙල් ගතියක් ඇති වේ'), findsOneWidget);
-    expect(find.text('තද බවක්, රළු බවක් හෝ පොතු ගැලවීමක් දැනේ'), findsOneWidget);
-    expect(find.text('T-කලාපය තෙල් සහිතයි, කම්මුල් සාමාන්‍යයි'), findsOneWidget);
+    // Verify Sensitive toggle card in Sinhala
+    expect(find.text(si.t('skinSensitiveTitle')), findsOneWidget);
+    expect(find.text(si.t('skinSensitiveDesc')), findsOneWidget);
     expect(find.text(si.t('skinSensitiveHint')), findsOneWidget);
-    expect(find.text('සමබර තෙතමනය සහ සුවපහසුව'), findsOneWidget);
+    expect(find.byType(Switch), findsOneWidget);
+  });
+
+  testWidgets(
+      'four base cards arrange 2x2 in portrait with equal heights per row',
+      (tester) async {
+    tester.view.physicalSize = const Size(800, 1280);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(KioskApp(repository: _FakeRepo()));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(s.t('touchStart')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SkinTypeCards), findsOneWidget);
+
+    // 4 base avatars in 2x2 layout
+    final avatars = find.descendant(
+      of: find.byType(SkinTypeCards),
+      matching: find.byType(ClipOval),
+    );
+    expect(avatars, findsNWidgets(4));
+
+    // Card 0 and Card 1 are on Row 1 (same top offset)
+    final r0Top = tester.getRect(avatars.at(0)).top;
+    final r1Top = tester.getRect(avatars.at(1)).top;
+    expect(r0Top, closeTo(r1Top, 0.5));
+
+    // Card 2 and Card 3 are on Row 2 (same top offset, below Row 1)
+    final r2Top = tester.getRect(avatars.at(2)).top;
+    final r3Top = tester.getRect(avatars.at(3)).top;
+    expect(r2Top, closeTo(r3Top, 0.5));
+    expect(r2Top, greaterThan(r0Top));
+  });
+
+  testWidgets(
+      'Sensitive alone does not enable continue, and Sensitive on + a base type passes both to engine',
+      (tester) async {
+    tester.view.physicalSize = const Size(1280, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(KioskApp(repository: _FakeRepo()));
+    await tester.pumpAndSettle();
+
+    // Start flow
+    await tester.tap(find.text(s.t('touchStart')));
+    await tester.pumpAndSettle();
+
+    // Find the Continue button
+    final continueButton = find.widgetWithText(FilledButton, s.t('continue'));
+    expect(continueButton, findsOneWidget);
+
+    // Initially with no base type selected, Continue is disabled
+    FilledButton btn = tester.widget<FilledButton>(continueButton);
+    expect(btn.onPressed, isNull, reason: 'Continue should be disabled before any selection');
+
+    // Tap the Sensitive toggle card (switching Sensitive ON alone)
+    final sensitiveCard = find.text(s.t('skinSensitiveTitle'));
+    expect(sensitiveCard, findsOneWidget);
+    await tester.tap(sensitiveCard);
+    await tester.pumpAndSettle();
+
+    // Verify switch is ON
+    final switchFinder = find.byType(Switch);
+    expect(switchFinder, findsOneWidget);
+    final switchWidget = tester.widget<Switch>(switchFinder);
+    expect(switchWidget.value, isTrue);
+
+    // Continue button MUST STILL BE DISABLED (Sensitive alone does not enable continue!)
+    btn = tester.widget<FilledButton>(continueButton);
+    expect(btn.onPressed, isNull,
+        reason: 'Sensitive toggle alone must never enable continue without a base skin type');
+
+    // Now pick a base skin type (e.g. combination)
+    await tester.tap(find.text(s.skin('combination')));
+    await tester.pumpAndSettle();
+
+    // Continue button MUST NOW BE ENABLED!
+    btn = tester.widget<FilledButton>(continueButton);
+    expect(btn.onPressed, isNotNull,
+        reason: 'Picking a base skin type should enable the continue button');
+
+    // Tap Continue to advance to Concerns
+    await tester.tap(continueButton);
+    await tester.pumpAndSettle();
+    expect(find.text(s.t('concernsTitle')), findsOneWidget);
+
+    // Pick a concern (e.g. acne)
+    await tester.tap(find.text(s.concern('acne')));
+    await tester.pumpAndSettle();
+
+    // Advance to Steps
+    await tester.tap(find.text(s.t('next')));
+    await tester.pumpAndSettle();
+    expect(find.text(s.t('stepsTitle')), findsOneWidget);
+
+    // Pick whole routine and advance to Results
+    await tester.tap(find.text(s.t('wholeRoutine')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(s.t('seeResults')));
+    await tester.pumpAndSettle();
+
+    // Verify we arrived at ResultsScreen
+    expect(find.byType(ResultsScreen), findsOneWidget);
+    expect(find.text(s.t('resultsTitle')), findsOneWidget);
   });
 }

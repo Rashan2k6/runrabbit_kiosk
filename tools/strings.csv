@@ -3,7 +3,9 @@ tagline,Find the skincare that suits you,ඔබේ සමට ගැළපෙන 
 touchStart,Touch to start,ආරම්භ කිරීමට ස්පර්ශ කරන්න,yes
 skinTitle,What is your skin type?,ඔබේ සමේ වර්ගය කුමක්ද?,yes
 skinHelp,Pick the one that feels most like your skin.,ඔබේ සමට වඩාත්ම සමාන එක තෝරන්න.,yes
-skinSensitiveHint,Can be combined with the others,අනෙක් වර්ග සමග එකතු කළ හැක.,yes
+skinSensitiveTitle,Sensitive,සංවේදී,no
+skinSensitiveDesc,"Redness, stinging or itching easily","ඉක්මනින් රතු වීම, දැවිල්ල හෝ කැසීම",no
+skinSensitiveHint,Choose this as well as a skin type,සම වර්ගයක් සමඟම මෙයත් තෝරන්න,no
 concernsTitle,What would you like to improve?,ඔබට වැඩිදියුණු කර ගැනීමට අවශ්‍ය කුමක්ද?,yes
 concernsHelp,Choose up to {max}.,උපරිම {max}ක් තෝරන්න.,yes
 counter,{n} of {max} chosen,{max}න් {n}ක් තෝරා ඇත,yes

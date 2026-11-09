@@ -5,18 +5,24 @@ import '../../widgets/app_icon_badge.dart';
 import 'adaptive.dart';
 import 'option_grid.dart';
 
-/// Five horizontal skin type selection cards matching RunRabbit's website aesthetic:
-/// - Arranged horizontally in the same line across the screen
-/// - Circular-cropped illustrated portrait avatar in the top part of each card
-/// - Skin type title, descriptive cue, and selection badge below the picture
-/// - Responsive scaling for kiosk tablets and phones
+/// Skin type selection for RunRabbit kiosk:
+/// - 4 base skin types (Oily, Dry, Combination, Normal) in 1 row (landscape) or 2x2 (portrait)
+///   with circular-cropped illustrated avatar and radio selection indicator.
+/// - Separate full-width toggle card for Sensitive skin below the base cards, with an icon,
+///   description, hint badge, and a switch on the right.
+/// - Quiz helper card below.
 class SkinTypeCards extends StatelessWidget {
   const SkinTypeCards({
     super.key,
     required this.items,
     required this.selectedBase,
     required this.sensitive,
-    required this.onTap,
+    this.onTap,
+    this.onPickBase,
+    this.onToggleSensitive,
+    this.sensitiveTitle,
+    this.sensitiveDesc,
+    this.sensitiveHint,
     this.onStartQuiz,
     this.quizTitle,
     this.quizSubtitle,
@@ -25,25 +31,47 @@ class SkinTypeCards extends StatelessWidget {
   final List<OptionItem> items;
   final String? selectedBase;
   final bool sensitive;
-  final void Function(String id) onTap;
+  final void Function(String id)? onTap;
+  final void Function(String id)? onPickBase;
+  final VoidCallback? onToggleSensitive;
+  final String? sensitiveTitle;
+  final String? sensitiveDesc;
+  final String? sensitiveHint;
   final VoidCallback? onStartQuiz;
   final String? quizTitle;
   final String? quizSubtitle;
+
+  void _handlePickBase(String id) {
+    if (onPickBase != null) {
+      onPickBase!(id);
+    } else if (onTap != null) {
+      onTap!(id);
+    }
+  }
+
+  void _handleToggleSensitive() {
+    if (onToggleSensitive != null) {
+      onToggleSensitive!();
+    } else if (onTap != null) {
+      onTap!('sensitive');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final a = Adaptive.of(context);
     final gap = a.s(12);
 
+    // Keep only the 4 base skin types for the pick-one grid
+    final baseCards = items.where((i) => i.id != 'sensitive').toList();
+
     return LayoutBuilder(
       builder: (context, constraints) {
-        final availableWidth = constraints.maxWidth;
-        final cardCount = items.length; // 5 cards
-        final singleCardWidth =
-            (availableWidth - ((cardCount - 1) * gap)) / cardCount;
-
-        // If cards can fit comfortably on one line (>= 95dp per card), display side-by-side
-        final fitsInSingleLine = singleCardWidth >= a.s(95);
+        final orientation = MediaQuery.orientationOf(context);
+        final isLandscape = orientation == Orientation.landscape ||
+            constraints.maxWidth > constraints.maxHeight;
+        final isShortLandscape = isLandscape && constraints.maxHeight < 330;
+        final cardGap = isShortLandscape ? a.s(6) : gap;
 
         return Center(
           child: SingleChildScrollView(
@@ -52,20 +80,22 @@ class SkinTypeCards extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (fitsInSingleLine)
+                // Base Skin Types: 1 row in landscape, 2x2 in portrait
+                if (isLandscape)
                   IntrinsicHeight(
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        for (var i = 0; i < items.length; i++) ...[
-                          if (i > 0) SizedBox(width: gap),
+                        for (var i = 0; i < baseCards.length; i++) ...[
+                          if (i > 0) SizedBox(width: cardGap),
                           Expanded(
                             child: _SkinTypeCard(
-                              item: items[i],
-                              selected: items[i].id == 'sensitive'
-                                  ? sensitive
-                                  : selectedBase == items[i].id,
-                              onTap: () => onTap(items[i].id),
+                              item: baseCards[i],
+                              selected: selectedBase == baseCards[i].id,
+                              onTap: () => _handlePickBase(baseCards[i].id),
+                              compact: isShortLandscape,
+                              avatarSize: isShortLandscape ? a.s(44) : null,
+                              verticalPadding: isShortLandscape ? a.s(6) : null,
                             ),
                           ),
                         ],
@@ -73,36 +103,65 @@ class SkinTypeCards extends StatelessWidget {
                     ),
                   )
                 else
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    physics: const BouncingScrollPhysics(),
-                    child: IntrinsicHeight(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          for (var i = 0; i < items.length; i++) ...[
-                            if (i > 0) SizedBox(width: gap),
-                            SizedBox(
-                              width: a.s(136),
-                              child: _SkinTypeCard(
-                                item: items[i],
-                                selected: items[i].id == 'sensitive'
-                                    ? sensitive
-                                    : selectedBase == items[i].id,
-                                onTap: () => onTap(items[i].id),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      for (var r = 0; r < baseCards.length; r += 2) ...[
+                        if (r > 0) SizedBox(height: gap),
+                        IntrinsicHeight(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Expanded(
+                                child: _SkinTypeCard(
+                                  item: baseCards[r],
+                                  selected: selectedBase == baseCards[r].id,
+                                  onTap: () => _handlePickBase(baseCards[r].id),
+                                  compact: true,
+                                ),
                               ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
+                              SizedBox(width: gap),
+                              if (r + 1 < baseCards.length)
+                                Expanded(
+                                  child: _SkinTypeCard(
+                                    item: baseCards[r + 1],
+                                    selected: selectedBase ==
+                                        baseCards[r + 1].id,
+                                    onTap: () => _handlePickBase(
+                                        baseCards[r + 1].id),
+                                    compact: true,
+                                  ),
+                                )
+                              else
+                                const Spacer(),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
+
+                SizedBox(height: cardGap),
+
+                // Separate full-width Sensitive toggle card
+                _SensitiveToggleCard(
+                  selected: sensitive,
+                  onToggle: _handleToggleSensitive,
+                  title: sensitiveTitle ?? 'Sensitive',
+                  description: sensitiveDesc ??
+                      'Redness, stinging or itching easily',
+                  hint: sensitiveHint ??
+                      'Choose this as well as a skin type',
+                  compact: isShortLandscape,
+                ),
+
                 if (onStartQuiz != null) ...[
-                  SizedBox(height: gap),
+                  SizedBox(height: cardGap),
                   _QuizHelperCard(
                     title: quizTitle ?? 'Not sure? Find your skin type',
                     subtitle: quizSubtitle ?? 'Take a quick test',
                     onTap: onStartQuiz!,
+                    compact: isShortLandscape,
                   ),
                 ],
               ],
@@ -114,16 +173,175 @@ class SkinTypeCards extends StatelessWidget {
   }
 }
 
+class _SensitiveToggleCard extends StatelessWidget {
+  const _SensitiveToggleCard({
+    required this.selected,
+    required this.onToggle,
+    required this.title,
+    required this.description,
+    required this.hint,
+    this.compact = false,
+  });
+
+  final bool selected;
+  final VoidCallback onToggle;
+  final String title;
+  final String description;
+  final String hint;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final a = Adaptive.of(context);
+    final isSi = Theme.of(context).textTheme.bodyLarge?.fontFamily ==
+            Brand.sinhalaFontFamily ||
+        DefaultTextStyle.of(context).style.fontFamily ==
+            Brand.sinhalaFontFamily;
+
+    final borderColor = selected
+        ? Brand.accent
+        : Brand.accent.withValues(alpha: 0.28);
+    final bgColor = selected
+        ? Brand.accent.withValues(alpha: 0.09)
+        : Brand.accent.withValues(alpha: 0.035);
+
+    return Semantics(
+      button: true,
+      toggled: selected,
+      label: '$title, $description. $hint',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onToggle,
+          borderRadius: BorderRadius.circular(Brand.cardRadius),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOutCubic,
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: BorderRadius.circular(Brand.cardRadius),
+              border: Border.all(
+                color: borderColor,
+                width: selected ? 2.0 : 1.2,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: selected
+                      ? Brand.accent.withValues(alpha: 0.12)
+                      : const Color(0x06000000),
+                  blurRadius: selected ? 10 : 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: compact ? a.s(12) : a.s(16),
+                vertical: compact ? a.s(6) : a.s(12),
+              ),
+              child: Row(
+                children: [
+                  AppIconBadge(
+                    icon: Icons.spa_rounded,
+                    size: compact ? a.s(28) : a.s(40),
+                    selected: selected,
+                  ),
+                  SizedBox(width: compact ? a.s(10) : a.s(14)),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Wrap(
+                          spacing: a.s(8),
+                          runSpacing: a.s(4),
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Text(
+                              title,
+                              style: TextStyle(
+                                fontSize: compact ? a.s(14) : a.s(16),
+                                fontWeight: FontWeight.w800,
+                                color: Brand.primary,
+                                letterSpacing: -0.2,
+                                height: isSi ? Brand.sinhalaLineHeight : null,
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: compact ? a.s(6) : a.s(8),
+                                vertical: compact ? a.s(1.5) : a.s(2),
+                              ),
+                              decoration: BoxDecoration(
+                                color: Brand.accent.withValues(alpha: 0.12),
+                                borderRadius:
+                                    BorderRadius.circular(Brand.pillRadius),
+                              ),
+                              child: Text(
+                                hint,
+                                style: TextStyle(
+                                  fontSize: compact ? a.s(10) : a.s(11),
+                                  fontWeight: FontWeight.w700,
+                                  color: Brand.accent,
+                                  height: isSi ? Brand.sinhalaLineHeight : null,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: a.s(3)),
+                        Text(
+                          description,
+                          softWrap: true,
+                          style: TextStyle(
+                            fontSize: compact ? a.s(11) : a.s(12),
+                            fontWeight: FontWeight.w500,
+                            color: Brand.mutedText,
+                            height: isSi ? Brand.sinhalaLineHeight : 1.25,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: a.s(10)),
+                  compact
+                      ? Transform.scale(
+                          scale: 0.8,
+                          child: Switch.adaptive(
+                            value: selected,
+                            onChanged: (_) => onToggle(),
+                            activeTrackColor: Brand.accent,
+                            activeThumbColor: Colors.white,
+                          ),
+                        )
+                      : Switch.adaptive(
+                          value: selected,
+                          onChanged: (_) => onToggle(),
+                          activeTrackColor: Brand.accent,
+                          activeThumbColor: Colors.white,
+                        ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _QuizHelperCard extends StatelessWidget {
   const _QuizHelperCard({
     required this.title,
     required this.subtitle,
     required this.onTap,
+    this.compact = false,
   });
 
   final String title;
   final String subtitle;
   final VoidCallback onTap;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -153,20 +371,21 @@ class _QuizHelperCard extends StatelessWidget {
               ],
             ),
             child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: a.s(56)),
+              constraints:
+                  BoxConstraints(minHeight: compact ? a.s(40) : a.s(56)),
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: a.s(18),
-                  vertical: a.s(12),
+                  horizontal: compact ? a.s(12) : a.s(18),
+                  vertical: compact ? a.s(6) : a.s(12),
                 ),
                 child: Row(
                   children: [
                     AppIconBadge(
                       svgAsset: 'assets/icons/sparkle.svg',
-                      size: a.s(36),
+                      size: compact ? a.s(26) : a.s(36),
                       selected: false,
                     ),
-                    SizedBox(width: a.s(14)),
+                    SizedBox(width: compact ? a.s(10) : a.s(14)),
                     Expanded(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -175,7 +394,7 @@ class _QuizHelperCard extends StatelessWidget {
                           Text(
                             title,
                             style: TextStyle(
-                              fontSize: a.s(15),
+                              fontSize: compact ? a.s(13) : a.s(15),
                               fontWeight: FontWeight.w800,
                               color: Brand.primary,
                               letterSpacing: -0.2,
@@ -185,7 +404,7 @@ class _QuizHelperCard extends StatelessWidget {
                           Text(
                             subtitle,
                             style: TextStyle(
-                              fontSize: a.s(12),
+                              fontSize: compact ? a.s(11) : a.s(12),
                               fontWeight: FontWeight.w600,
                               color: Brand.accent,
                             ),
@@ -196,7 +415,7 @@ class _QuizHelperCard extends StatelessWidget {
                     Icon(
                       Icons.arrow_forward_rounded,
                       color: Brand.accent,
-                      size: a.s(20),
+                      size: compact ? a.s(16) : a.s(20),
                     ),
                   ],
                 ),
@@ -214,11 +433,17 @@ class _SkinTypeCard extends StatelessWidget {
     required this.item,
     required this.selected,
     required this.onTap,
+    this.compact = false,
+    this.avatarSize,
+    this.verticalPadding,
   });
 
   final OptionItem item;
   final bool selected;
   final VoidCallback onTap;
+  final bool compact;
+  final double? avatarSize;
+  final double? verticalPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -229,6 +454,7 @@ class _SkinTypeCard extends StatelessWidget {
             Brand.sinhalaFontFamily;
     final borderColor = selected ? Brand.primary : Brand.outline;
     final borderWidth = selected ? 2.4 : 1.2;
+    final avatarDimension = avatarSize ?? (compact ? a.s(58) : a.s(68));
 
     return Semantics(
       button: true,
@@ -262,7 +488,7 @@ class _SkinTypeCard extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: a.s(8),
-                vertical: a.s(14),
+                vertical: verticalPadding ?? (compact ? a.s(10) : a.s(12)),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
@@ -270,8 +496,8 @@ class _SkinTypeCard extends StatelessWidget {
                 children: [
                   // Picture of the skin type cropped round in the top part of the card
                   Container(
-                    width: a.s(74),
-                    height: a.s(74),
+                    width: avatarDimension,
+                    height: avatarDimension,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
@@ -298,7 +524,8 @@ class _SkinTypeCard extends StatelessWidget {
                             alignment: Alignment.center,
                             child: Text(
                               item.emoji ?? '✨',
-                              style: TextStyle(fontSize: a.s(30)),
+                              style:
+                                  TextStyle(fontSize: avatarDimension * 0.44),
                             ),
                           ),
                         ),
@@ -306,7 +533,7 @@ class _SkinTypeCard extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(height: a.s(10)),
+                  SizedBox(height: compact ? a.s(6) : a.s(10)),
 
                   // Text below that: Title
                   Text(
@@ -316,7 +543,7 @@ class _SkinTypeCard extends StatelessWidget {
                     softWrap: true,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: a.s(16),
+                      fontSize: compact ? a.s(14) : a.s(16),
                       fontWeight: FontWeight.w800,
                       letterSpacing: -0.2,
                       color: Brand.primary,
@@ -325,7 +552,7 @@ class _SkinTypeCard extends StatelessWidget {
                   ),
 
                   if (item.subtitle != null) ...[
-                    SizedBox(height: a.s(4)),
+                    SizedBox(height: a.s(2)),
                     Text(
                       item.subtitle!,
                       textAlign: TextAlign.center,
@@ -333,7 +560,7 @@ class _SkinTypeCard extends StatelessWidget {
                       softWrap: true,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: a.s(11),
+                        fontSize: compact ? a.s(10) : a.s(11),
                         fontWeight: FontWeight.w500,
                         height: isSi ? Brand.sinhalaLineHeight : 1.25,
                         color: Brand.mutedText,
@@ -342,25 +569,25 @@ class _SkinTypeCard extends StatelessWidget {
                   ],
 
                   const Spacer(),
-                  SizedBox(height: a.s(8)),
+                  SizedBox(height: a.s(4)),
 
-                  // Selection Radio Indicator
+                  // Selection Radio Indicator (radio circle for the pick-one base cards)
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
-                    width: a.s(22),
-                    height: a.s(22),
+                    width: compact ? a.s(18) : a.s(22),
+                    height: compact ? a.s(18) : a.s(22),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: selected ? Brand.accent : Colors.transparent,
                       border: Border.all(
                         color: selected ? Brand.accent : Brand.outline,
-                        width: 1.8,
+                        width: compact ? 1.5 : 1.8,
                       ),
                     ),
                     child: selected
                         ? Icon(
                             Icons.check_rounded,
-                            size: a.s(15),
+                            size: compact ? a.s(12) : a.s(15),
                             color: Colors.white,
                           )
                         : null,

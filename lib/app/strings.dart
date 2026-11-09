@@ -41,7 +41,9 @@ const _en = <String, String>{
   'touchStart': 'Touch to start',
   'skinTitle': 'What is your skin type?',
   'skinHelp': 'Pick the one that feels most like your skin.',
-  'skinSensitiveHint': 'Can be combined with the others',
+  'skinSensitiveTitle': 'Sensitive',
+  'skinSensitiveDesc': 'Redness, stinging or itching easily',
+  'skinSensitiveHint': 'Choose this as well as a skin type',
   'concernsTitle': 'What would you like to improve?',
   'concernsHelp': 'Choose up to {max}.',
   'counter': '{n} of {max} chosen',
@@ -149,7 +151,9 @@ const _si = <String, String>{
   'touchStart': 'ආරම්භ කිරීමට ස්පර්ශ කරන්න',
   'skinTitle': 'ඔබේ සමේ වර්ගය කුමක්ද?',
   'skinHelp': 'ඔබේ සමට වඩාත්ම සමාන එක තෝරන්න.',
-  'skinSensitiveHint': 'අනෙක් වර්ග සමග එකතු කළ හැක.',
+  'skinSensitiveTitle': 'සංවේදී', // TODO native speaker review
+  'skinSensitiveDesc': 'ඉක්මනින් රතු වීම, දැවිල්ල හෝ කැසීම', // TODO native speaker review
+  'skinSensitiveHint': 'සම වර්ගයක් සමඟම මෙයත් තෝරන්න', // TODO native speaker review
   'concernsTitle': 'ඔබට වැඩිදියුණු කර ගැනීමට අවශ්‍ය කුමක්ද?',
   'concernsHelp': 'උපරිම {max}ක් තෝරන්න.',
   'counter': '{max}න් {n}ක් තෝරා ඇත',

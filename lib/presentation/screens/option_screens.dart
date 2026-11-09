@@ -36,7 +36,7 @@ class SkinTypeScreen extends StatelessWidget {
       title: s.t('skinTitle'),
       subtitle: s.t('skinHelp'),
       primary: FilledButton(
-        onPressed: flow.hasSkinSelection ? flow.continueFromSkin : null,
+        onPressed: flow.skinType != null ? flow.continueFromSkin : null,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -48,20 +48,21 @@ class SkinTypeScreen extends StatelessWidget {
       ),
       child: SkinTypeCards(
         items: [
-          for (final o in skinTypes)
+          for (final o in skinTypes.where((o) => o.id != 'sensitive'))
             OptionItem(
               id: o.id,
               label: s.skin(o.id),
               emoji: o.emoji,
-              subtitle: o.id == 'sensitive'
-                  ? s.t('skinSensitiveHint')
-                  : _skinSubtitle(o.id),
+              subtitle: _skinSubtitle(o.id),
             ),
         ],
         selectedBase: flow.skinType,
         sensitive: flow.sensitive,
-        onTap: (id) =>
-            id == 'sensitive' ? flow.toggleSensitive() : flow.pickBaseSkin(id),
+        onPickBase: flow.pickBaseSkin,
+        onToggleSensitive: flow.toggleSensitive,
+        sensitiveTitle: s.t('skinSensitiveTitle'),
+        sensitiveDesc: s.t('skinSensitiveDesc'),
+        sensitiveHint: s.t('skinSensitiveHint'),
         onStartQuiz: flow.startQuiz,
         quizTitle: s.t('quizEntryTitle'),
         quizSubtitle: s.t('quizEntrySubtitle'),
