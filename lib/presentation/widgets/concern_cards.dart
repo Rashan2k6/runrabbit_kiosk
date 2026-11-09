@@ -127,6 +127,10 @@ class _ConcernCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final a = Adaptive.of(context);
+    final isSi = Theme.of(context).textTheme.bodyLarge?.fontFamily ==
+            Brand.sinhalaFontFamily ||
+        DefaultTextStyle.of(context).style.fontFamily ==
+            Brand.sinhalaFontFamily;
     final borderColor = selected ? Brand.primary : Brand.outline;
     final borderWidth = selected ? 2.4 : 1.2;
 
@@ -230,12 +234,13 @@ class _ConcernCard extends StatelessWidget {
                             Text(
                               item.label,
                               maxLines: 2,
+                              softWrap: true,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: a.s(16),
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: -0.2,
-                                height: 1.18,
+                                height: isSi ? Brand.sinhalaLineHeight : 1.18,
                                 color: Brand.primary,
                               ),
                             ),
@@ -244,11 +249,12 @@ class _ConcernCard extends StatelessWidget {
                               Text(
                                 item.subtitle!,
                                 maxLines: 2,
+                                softWrap: true,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontSize: a.s(12),
                                   fontWeight: FontWeight.w500,
-                                  height: 1.25,
+                                  height: isSi ? Brand.sinhalaLineHeight : 1.25,
                                   color: Brand.mutedText,
                                 ),
                               ),

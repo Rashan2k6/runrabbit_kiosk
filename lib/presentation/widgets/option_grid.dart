@@ -169,6 +169,10 @@ class _OptionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final itemColor = _resolveColor();
+    final isSi = Theme.of(context).textTheme.bodyLarge?.fontFamily ==
+            Brand.sinhalaFontFamily ||
+        DefaultTextStyle.of(context).style.fontFamily ==
+            Brand.sinhalaFontFamily;
 
     return Semantics(
       button: true,
@@ -259,25 +263,28 @@ class _OptionCard extends StatelessWidget {
                         Text(
                           item.label,
                           maxLines: 2,
+                          softWrap: true,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: labelFontSize,
                             fontWeight: FontWeight.bold,
                             letterSpacing: -0.3,
                             color: Brand.primary,
-                            height: 1.15,
+                            height: isSi ? Brand.sinhalaLineHeight : 1.15,
                           ),
                         ),
                         if (item.subtitle != null) ...[
                           const SizedBox(height: 2),
                           Text(
                             item.subtitle!,
-                            maxLines: 1,
+                            maxLines: 2,
+                            softWrap: true,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: (labelFontSize * 0.65).clamp(12.0, 16.0),
                               fontWeight: FontWeight.w500,
                               color: Brand.mutedText,
+                              height: isSi ? Brand.sinhalaLineHeight : null,
                             ),
                           ),
                         ],

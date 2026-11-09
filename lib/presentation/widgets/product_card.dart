@@ -225,17 +225,18 @@ class ProductCard extends StatelessWidget {
 
                 // Benefit statement (Standardized 2-line height so all cards align!)
                 SizedBox(
-                  height: a.s(34),
+                  height: a.s(s.lang == 'si' ? 42 : 34),
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: Text(
                       p.benefitFor(s.lang),
                       maxLines: 2,
+                      softWrap: true,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: a.s(12.5),
                         color: Brand.textPrimary,
-                        height: 1.3,
+                        height: s.lineHeight(1.3),
                       ),
                     ),
                   ),
@@ -246,7 +247,7 @@ class ProductCard extends StatelessWidget {
                 // Routine fit explanation (Standardized height container!)
                 Container(
                   width: double.infinity,
-                  height: a.s(52),
+                  height: a.s(s.lang == 'si' ? 58 : 52),
                   padding: EdgeInsets.symmetric(
                     horizontal: a.s(8),
                     vertical: a.s(6),
@@ -269,11 +270,12 @@ class ProductCard extends StatelessWidget {
                         child: Text(
                           reason.isNotEmpty ? reason : s.t('reasonRoutine'),
                           maxLines: 2,
+                          softWrap: true,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: a.s(11.5),
                             color: Brand.mutedText,
-                            height: 1.25,
+                            height: s.lineHeight(1.25),
                           ),
                         ),
                       ),
@@ -312,7 +314,7 @@ class ProductCard extends StatelessWidget {
                               fontSize: a.s(11.5),
                               fontWeight: FontWeight.w500,
                               color: Brand.caution,
-                              height: 1.25,
+                              height: s.lineHeight(1.25),
                             ),
                           ),
                         ),

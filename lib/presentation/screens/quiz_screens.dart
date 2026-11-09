@@ -157,12 +157,13 @@ class QuizQuestionScreen extends StatelessWidget {
                                   Text(
                                     questionText,
                                     textAlign: TextAlign.center,
-                                    maxLines: 3,
+                                    maxLines: 4,
+                                    softWrap: true,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                       fontSize: questionFontSize,
                                       fontWeight: FontWeight.w800,
-                                      height: 1.24,
+                                      height: s.lineHeight(1.24),
                                       letterSpacing: -0.6,
                                       color: const Color(0xFF141414),
                                     ),
@@ -220,11 +221,12 @@ class QuizQuestionScreen extends StatelessWidget {
               final helperLine = Text(
                 s.t('quizHelper'),
                 textAlign: TextAlign.center,
+                softWrap: true,
                 style: TextStyle(
                   fontSize: a.s(16.5).clamp(16.0, 18.0),
                   fontWeight: FontWeight.w500,
                   color: Brand.mutedText,
-                  height: 1.3,
+                  height: s.lineHeight(1.3),
                 ),
               );
 
@@ -529,11 +531,15 @@ class _SymptomRow extends StatelessWidget {
         Expanded(
           child: Text(
             text,
+            softWrap: true,
             style: TextStyle(
               fontSize: a.s(15),
               fontWeight: FontWeight.w600,
               color: Brand.primary.withValues(alpha: 0.88),
-              height: 1.35,
+              height: Theme.of(context).textTheme.bodyLarge?.fontFamily ==
+                      Brand.sinhalaFontFamily
+                  ? Brand.sinhalaLineHeight
+                  : 1.35,
             ),
           ),
         ),
@@ -662,11 +668,12 @@ class QuizResultScreen extends StatelessWidget {
                         child: Text(
                           s.t('quizResultDisclaimer'),
                           textAlign: TextAlign.center,
+                          softWrap: true,
                           style: TextStyle(
                             fontSize: a.s(13),
                             fontWeight: FontWeight.w500,
                             color: Brand.mutedText,
-                            height: 1.3,
+                            height: s.lineHeight(1.3),
                           ),
                         ),
                       ),

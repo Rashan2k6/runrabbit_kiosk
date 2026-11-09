@@ -53,34 +53,13 @@ class SkinTypeCards extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (fitsInSingleLine)
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      for (var i = 0; i < items.length; i++) ...[
-                        if (i > 0) SizedBox(width: gap),
-                        Expanded(
-                          child: _SkinTypeCard(
-                            item: items[i],
-                            selected: items[i].id == 'sensitive'
-                                ? sensitive
-                                : selectedBase == items[i].id,
-                            onTap: () => onTap(items[i].id),
-                          ),
-                        ),
-                      ],
-                    ],
-                  )
-                else
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    physics: const BouncingScrollPhysics(),
+                  IntrinsicHeight(
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         for (var i = 0; i < items.length; i++) ...[
                           if (i > 0) SizedBox(width: gap),
-                          SizedBox(
-                            width: a.s(136),
+                          Expanded(
                             child: _SkinTypeCard(
                               item: items[i],
                               selected: items[i].id == 'sensitive'
@@ -91,6 +70,31 @@ class SkinTypeCards extends StatelessWidget {
                           ),
                         ],
                       ],
+                    ),
+                  )
+                else
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    child: IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          for (var i = 0; i < items.length; i++) ...[
+                            if (i > 0) SizedBox(width: gap),
+                            SizedBox(
+                              width: a.s(136),
+                              child: _SkinTypeCard(
+                                item: items[i],
+                                selected: items[i].id == 'sensitive'
+                                    ? sensitive
+                                    : selectedBase == items[i].id,
+                                onTap: () => onTap(items[i].id),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
                     ),
                   ),
                 if (onStartQuiz != null) ...[
@@ -219,6 +223,10 @@ class _SkinTypeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final a = Adaptive.of(context);
+    final isSi = Theme.of(context).textTheme.bodyLarge?.fontFamily ==
+            Brand.sinhalaFontFamily ||
+        DefaultTextStyle.of(context).style.fontFamily ==
+            Brand.sinhalaFontFamily;
     final borderColor = selected ? Brand.primary : Brand.outline;
     final borderWidth = selected ? 2.4 : 1.2;
 
@@ -257,8 +265,7 @@ class _SkinTypeCard extends StatelessWidget {
                 vertical: a.s(14),
               ),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Picture of the skin type cropped round in the top part of the card
@@ -299,19 +306,21 @@ class _SkinTypeCard extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(height: a.s(12)),
+                  SizedBox(height: a.s(10)),
 
                   // Text below that: Title
                   Text(
                     item.label,
                     textAlign: TextAlign.center,
-                    maxLines: 1,
+                    maxLines: isSi ? 2 : 1,
+                    softWrap: true,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: a.s(16),
                       fontWeight: FontWeight.w800,
                       letterSpacing: -0.2,
                       color: Brand.primary,
+                      height: isSi ? Brand.sinhalaLineHeight : null,
                     ),
                   ),
 
@@ -321,17 +330,19 @@ class _SkinTypeCard extends StatelessWidget {
                       item.subtitle!,
                       textAlign: TextAlign.center,
                       maxLines: 2,
+                      softWrap: true,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: a.s(11),
                         fontWeight: FontWeight.w500,
-                        height: 1.25,
+                        height: isSi ? Brand.sinhalaLineHeight : 1.25,
                         color: Brand.mutedText,
                       ),
                     ),
                   ],
 
-                  SizedBox(height: a.s(10)),
+                  const Spacer(),
+                  SizedBox(height: a.s(8)),
 
                   // Selection Radio Indicator
                   AnimatedContainer(

@@ -58,4 +58,6 @@ class Brand {
 
   // Typography
   static const String? fontFamily = null;
+  static const String sinhalaFontFamily = 'NotoSansSinhala';
+  static const double sinhalaLineHeight = 1.45;
 }

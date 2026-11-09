@@ -319,13 +319,26 @@ void main() {
     expect(result.recommendations.any((r) => r.product.id == 'nose-pack-1'), isFalse);
   });
 
-  test('multi-step routines harmonize and prioritize the same brand', () {
-    final testProds = [
-      // Brand A has full routine coverage
+  test('a brand tab list never contains a brand that cannot fill the required steps (LAPCOS with a cleanser step selected is excluded)', () {
+    final prods = [
+      // LAPCOS has only mask
       const Product(
-        id: 'a-cleanse',
-        name: 'Brand A Cleanser',
-        brand: 'Brand A',
+        id: 'lapcos-mask',
+        name: 'LAPCOS Pearl Mask',
+        brand: 'LAPCOS',
+        step: Step.mask,
+        price: 900,
+        inStock: true,
+        skinTypes: ['all'],
+        concerns: {'dullness': 2},
+        keyIngredients: [],
+        avoidSkinTypes: [],
+      ),
+      // Brand X has cleanser and toner
+      const Product(
+        id: 'bx-cleanse',
+        name: 'BX Cleanser',
+        brand: 'Brand X',
         step: Step.cleanser,
         price: 2000,
         inStock: true,
@@ -335,41 +348,246 @@ void main() {
         avoidSkinTypes: [],
       ),
       const Product(
-        id: 'a-serum',
-        name: 'Brand A Serum',
-        brand: 'Brand A',
-        step: Step.serum,
-        price: 3000,
+        id: 'bx-toner',
+        name: 'BX Toner',
+        brand: 'Brand X',
+        step: Step.toner,
+        price: 2500,
         inStock: true,
         skinTypes: ['all'],
         concerns: {'acne': 2},
         keyIngredients: [],
         avoidSkinTypes: [],
       ),
-      // Brand B only has serum with slightly higher concern score
+    ];
+
+    // When cleanser and toner are selected, LAPCOS cannot fill the steps and must be excluded
+    final brandRoutines = RecommendationEngine.recommendByBrand(
+      products: prods,
+      skinType: 'oily',
+      concerns: {'acne'},
+      steps: {Step.cleanser, Step.toner},
+    );
+
+    expect(brandRoutines.any((b) => b.brand.toLowerCase() == 'lapcos'), isFalse);
+    expect(brandRoutines.any((b) => b.brand == 'Brand X'), isTrue);
+  });
+
+  test('a brand routine contains only products of that brand', () {
+    final brandRoutines = RecommendationEngine.recommendByBrand(
+      products: products,
+      skinType: 'oily',
+      concerns: {'acne', 'pores'},
+      steps: routineSteps.toSet(),
+    );
+
+    for (final routine in brandRoutines) {
+      expect(
+        routine.items.every((item) =>
+            item.product.brand.toLowerCase() == routine.brand.toLowerCase()),
+        isTrue,
+      );
+    }
+  });
+
+  test('no more than 2 brand routines are returned, ranked by totalScore', () {
+    final prods = [
+      for (final b in ['Brand1', 'Brand2', 'Brand3', 'Brand4']) ...[
+        Product(
+          id: '$b-c',
+          name: '$b Cleanser',
+          brand: b,
+          step: Step.cleanser,
+          price: 1500,
+          inStock: true,
+          skinTypes: ['all'],
+          concerns: {'acne': b == 'Brand1' ? 3 : (b == 'Brand2' ? 2 : 1)},
+          keyIngredients: const [],
+          avoidSkinTypes: const [],
+        ),
+        Product(
+          id: '$b-t',
+          name: '$b Toner',
+          brand: b,
+          step: Step.toner,
+          price: 1500,
+          inStock: true,
+          skinTypes: ['all'],
+          concerns: {'acne': b == 'Brand1' ? 3 : (b == 'Brand2' ? 2 : 1)},
+          keyIngredients: const [],
+          avoidSkinTypes: const [],
+        ),
+      ],
+    ];
+
+    final brandRoutines = RecommendationEngine.recommendByBrand(
+      products: prods,
+      skinType: 'oily',
+      concerns: {'acne'},
+      steps: {Step.cleanser, Step.toner},
+    );
+
+    expect(brandRoutines.length, lessThanOrEqualTo(2));
+    expect(brandRoutines.length, 2);
+    expect(brandRoutines.first.totalScore,
+        greaterThanOrEqualTo(brandRoutines.last.totalScore));
+    expect(brandRoutines[0].brand, 'Brand1');
+    expect(brandRoutines[1].brand, 'Brand2');
+  });
+
+  test(
+      'sold-out and avoid-skin-type products are never in a brand routine (test with sensitive = true)',
+      () {
+    final prods = [
+      // Sold out product
       const Product(
-        id: 'b-serum',
-        name: 'Brand B Serum',
-        brand: 'Brand B',
-        step: Step.serum,
-        price: 3000,
-        inStock: true,
+        id: 's-out',
+        name: 'Brand Z Out of Stock Cleanser',
+        brand: 'Brand Z',
+        step: Step.cleanser,
+        price: 2000,
+        inStock: false,
         skinTypes: ['all'],
         concerns: {'acne': 3},
         keyIngredients: [],
         avoidSkinTypes: [],
       ),
+      // In stock but avoids sensitive
+      const Product(
+        id: 's-avoid',
+        name: 'Brand Z Harsh Cleanser',
+        brand: 'Brand Z',
+        step: Step.cleanser,
+        price: 1800,
+        inStock: true,
+        skinTypes: ['all'],
+        concerns: {'acne': 3},
+        keyIngredients: [],
+        avoidSkinTypes: ['sensitive'],
+      ),
+      // Gentle cleanser
+      const Product(
+        id: 's-gentle',
+        name: 'Brand Z Gentle Cleanser',
+        brand: 'Brand Z',
+        step: Step.cleanser,
+        price: 2200,
+        inStock: true,
+        skinTypes: ['sensitive'],
+        concerns: {'acne': 2},
+        keyIngredients: [],
+        avoidSkinTypes: [],
+      ),
+      const Product(
+        id: 's-toner',
+        name: 'Brand Z Gentle Toner',
+        brand: 'Brand Z',
+        step: Step.toner,
+        price: 2500,
+        inStock: true,
+        skinTypes: ['all'],
+        concerns: {'acne': 2},
+        keyIngredients: [],
+        avoidSkinTypes: [],
+      ),
     ];
 
-    final result = RecommendationEngine.recommend(
-      products: testProds,
+    final brandRoutines = RecommendationEngine.recommendByBrand(
+      products: prods,
       skinType: 'oily',
       concerns: {'acne'},
-      steps: {Step.cleanser, Step.serum},
+      steps: {Step.cleanser, Step.toner},
+      sensitive: true,
     );
 
-    // Both cleanser and serum should come from Brand A to keep routine consistent
-    expect(result.recommendations.length, 2);
-    expect(result.recommendations.every((r) => r.product.brand == 'Brand A'), isTrue);
+    expect(brandRoutines, isNotEmpty);
+    final zRoutine = brandRoutines.firstWhere((b) => b.brand == 'Brand Z');
+    expect(zRoutine.items.any((i) => !i.product.inStock), isFalse);
+    expect(
+        zRoutine.items
+            .any((i) => i.product.avoidSkinTypes.contains('sensitive')),
+        isFalse);
+    expect(zRoutine.items.any((i) => i.product.id == 's-gentle'), isTrue);
+  });
+
+  test(
+      'a missing step appears in missingSteps and no foreign-brand product is added',
+      () {
+    final prods = [
+      // Brand Y has 4 of 5 routine steps (missing sunscreen)
+      const Product(
+        id: 'y-c',
+        name: 'Brand Y Cleanser',
+        brand: 'Brand Y',
+        step: Step.cleanser,
+        price: 2000,
+        inStock: true,
+        skinTypes: ['all'],
+        concerns: {'acne': 2},
+        keyIngredients: [],
+        avoidSkinTypes: [],
+      ),
+      const Product(
+        id: 'y-t',
+        name: 'Brand Y Toner',
+        brand: 'Brand Y',
+        step: Step.toner,
+        price: 2000,
+        inStock: true,
+        skinTypes: ['all'],
+        concerns: {'acne': 2},
+        keyIngredients: [],
+        avoidSkinTypes: [],
+      ),
+      const Product(
+        id: 'y-s',
+        name: 'Brand Y Serum',
+        brand: 'Brand Y',
+        step: Step.serum,
+        price: 2000,
+        inStock: true,
+        skinTypes: ['all'],
+        concerns: {'acne': 2},
+        keyIngredients: [],
+        avoidSkinTypes: [],
+      ),
+      const Product(
+        id: 'y-m',
+        name: 'Brand Y Moisturiser',
+        brand: 'Brand Y',
+        step: Step.moisturiser,
+        price: 2000,
+        inStock: true,
+        skinTypes: ['all'],
+        concerns: {'acne': 2},
+        keyIngredients: [],
+        avoidSkinTypes: [],
+      ),
+      // Foreign brand with sunscreen
+      const Product(
+        id: 'other-sun',
+        name: 'Other Brand Sunscreen',
+        brand: 'Other Brand',
+        step: Step.sunscreen,
+        price: 2000,
+        inStock: true,
+        skinTypes: ['all'],
+        concerns: {'acne': 2},
+        keyIngredients: [],
+        avoidSkinTypes: [],
+      ),
+    ];
+
+    final brandRoutines = RecommendationEngine.recommendByBrand(
+      products: prods,
+      skinType: 'oily',
+      concerns: {'acne'},
+      steps: routineSteps.toSet(),
+    );
+
+    final yRoutine = brandRoutines.firstWhere((b) => b.brand == 'Brand Y');
+    expect(yRoutine.missingSteps, contains(Step.sunscreen));
+    expect(yRoutine.items.any((i) => i.product.step == Step.sunscreen), isFalse);
+    expect(yRoutine.items.every((i) => i.product.brand == 'Brand Y'), isTrue);
   });
 }

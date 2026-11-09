@@ -16,18 +16,13 @@ class SkinTypeScreen extends StatelessWidget {
   final Strings s;
 
   String? _skinSubtitle(String id) {
-    if (flow.lang == 'si') return null;
     switch (id) {
       case 'oily':
-        return 'Prone to shine throughout the day';
       case 'dry':
-        return 'Feels tight, rough or flaky';
       case 'combination':
-        return 'Oily T-zone, normal cheeks';
       case 'sensitive':
-        return 'Easily irritated or reactive';
       case 'normal':
-        return 'Balanced moisture and comfort';
+        return s.skinSub(id);
       default:
         return null;
     }
@@ -45,7 +40,7 @@ class SkinTypeScreen extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(s.t('continue')),
+            Flexible(child: Text(s.t('continue'), softWrap: true)),
             const SizedBox(width: 8),
             const Icon(Icons.arrow_forward_rounded, size: 20),
           ],
@@ -82,24 +77,16 @@ class ConcernsScreen extends StatelessWidget {
   final Strings s;
 
   String? _concernSubtitle(String id) {
-    if (flow.lang == 'si') return null;
     switch (id) {
       case 'acne':
-        return 'Blemishes & active spots';
       case 'pores':
-        return 'Congestion & texture';
       case 'pigmentation':
-        return 'Sun spots & dark marks';
       case 'dullness':
-        return 'Uneven tone & lack of glow';
       case 'aging':
-        return 'Elasticity & fine lines';
       case 'darkcircles':
-        return 'Under-eye discoloration';
       case 'dryness':
-        return 'Dehydration & moisture barrier';
       case 'redness':
-        return 'Flushing & skin barrier calm';
+        return s.concernSub(id);
       default:
         return null;
     }
@@ -119,7 +106,7 @@ class ConcernsScreen extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(s.t('next')),
+            Flexible(child: Text(s.t('next'), softWrap: true)),
             const SizedBox(width: 8),
             const Icon(Icons.arrow_forward_rounded, size: 20),
           ],
@@ -157,7 +144,7 @@ class StepsScreen extends StatelessWidget {
       subtitle: s.t('stepsHelp'),
       primary: FilledButton(
         onPressed: flow.steps.isEmpty ? null : flow.seeResults,
-        child: Text(s.t('seeResults')),
+        child: Text(s.t('seeResults'), softWrap: true),
       ),
       child: OptionGrid(
         items: [

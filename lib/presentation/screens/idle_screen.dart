@@ -56,9 +56,12 @@ class IdleScreen extends StatelessWidget {
                         ),
                         SizedBox(height: a.s(48)),
                         Container(
+                          constraints: BoxConstraints(
+                            maxWidth: a.width - a.s(64),
+                          ),
                           padding: EdgeInsets.symmetric(
-                            horizontal: a.s(44),
-                            vertical: a.s(22),
+                            horizontal: a.s(32),
+                            vertical: a.s(20),
                           ),
                           decoration: BoxDecoration(
                             color: Brand.primary,
@@ -73,15 +76,19 @@ class IdleScreen extends StatelessWidget {
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                s.t('touchStart'),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: a.s(24),
-                                  fontWeight: FontWeight.w700,
-                                  color: Brand.onPrimary,
-                                  letterSpacing: 0.3,
+                              Flexible(
+                                child: Text(
+                                  s.t('touchStart'),
+                                  textAlign: TextAlign.center,
+                                  softWrap: true,
+                                  style: TextStyle(
+                                    fontSize: a.s(24),
+                                    fontWeight: FontWeight.w700,
+                                    color: Brand.onPrimary,
+                                    letterSpacing: 0.3,
+                                  ),
                                 ),
                               ),
                               SizedBox(width: a.s(12)),

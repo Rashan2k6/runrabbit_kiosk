@@ -18,12 +18,25 @@ enum Stage {
 /// Everything the customer has chosen. Lives above the screens, so rotating
 /// the tablet never loses a choice.
 class KioskFlow extends ChangeNotifier {
+  KioskFlow({String initialLang = 'en', Stage initialStage = Stage.idle})
+      : lang = initialLang,
+        stage = initialStage;
+
   Stage stage = Stage.idle;
   String? skinType;
   bool sensitive = false;
   final Set<String> concerns = {};
   final Set<Step> steps = {};
   String lang = 'en';
+
+  /// Currently selected brand tab on the results screen (null = Best match).
+  String? selectedBrandTab;
+
+  void selectBrandTab(String? brand) {
+    if (selectedBrandTab == brand) return;
+    selectedBrandTab = brand;
+    notifyListeners();
+  }
 
   // Quiz state
   SkinQuizResult? quizResult;
@@ -33,9 +46,13 @@ class KioskFlow extends ChangeNotifier {
   final Set<String> quizConcerns = {};
   bool cameFromQuiz = false;
 
-  void start() => _go(Stage.skin);
+  void start() {
+    selectedBrandTab = null;
+    _go(Stage.skin);
+  }
 
   void startQuiz() {
+    selectedBrandTab = null;
     currentQuizNodeId = SkinQuiz.startNodeId;
     quizHistory.clear();
     _go(Stage.quizQuestion);
@@ -151,6 +168,7 @@ class KioskFlow extends ChangeNotifier {
   }
 
   void toggleConcern(String id) {
+    selectedBrandTab = null;
     if (!concerns.remove(id)) {
       if (concerns.length >= maxConcerns) return;
       concerns.add(id);
@@ -165,11 +183,13 @@ class KioskFlow extends ChangeNotifier {
 
   void toggleStep(Step step) {
     if (!routineSteps.contains(step)) return;
+    selectedBrandTab = null;
     if (!steps.remove(step)) steps.add(step);
     notifyListeners();
   }
 
   void toggleBundle() {
+    selectedBrandTab = null;
     if (isWholeRoutine) {
       steps.clear();
     } else {
@@ -226,6 +246,7 @@ class KioskFlow extends ChangeNotifier {
     stage = Stage.idle;
     skinType = null;
     sensitive = false;
+    selectedBrandTab = null;
     quizResult = null;
     quizBaseResult = null;
     quizConcerns.clear();

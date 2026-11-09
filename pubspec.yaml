@@ -26,3 +26,9 @@ flutter:
     - assets/images/concerns/
     - assets/images/products/
     - assets/icons/
+  fonts:
+    - family: NotoSansSinhala
+      fonts:
+        - asset: assets/fonts/NotoSansSinhala-Regular.ttf
+        - asset: assets/fonts/NotoSansSinhala-Bold.ttf
+          weight: 700

@@ -77,17 +77,18 @@ class ScreenFrame extends StatelessWidget {
                     children: [
                       BrandLogo(
                         fontSize: a.s(22),
-                        letterSpacing: 3.5,
+                        letterSpacing: a.width < 500 ? 1.5 : 3.5,
                       ),
-                      Text(
-                        Brand.tagline,
-                        style: TextStyle(
-                          fontSize: a.s(10),
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 1.5,
-                          color: Brand.mutedText,
+                      if (a.width >= 500)
+                        Text(
+                          Brand.tagline,
+                          style: TextStyle(
+                            fontSize: a.s(10),
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 1.5,
+                            color: Brand.mutedText,
+                          ),
                         ),
-                      ),
                     ],
                   ),
                   const Spacer(),
@@ -96,7 +97,7 @@ class ScreenFrame extends StatelessWidget {
                   if (step > 0 && step <= 4) ...[
                     Container(
                       padding: EdgeInsets.symmetric(
-                        horizontal: a.s(12),
+                        horizontal: a.s(10),
                         vertical: a.s(6),
                       ),
                       decoration: BoxDecoration(
@@ -127,7 +128,7 @@ class ScreenFrame extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(width: a.s(16)),
+                    SizedBox(width: a.s(12)),
                   ],
 
                   // Language Switcher
@@ -136,8 +137,8 @@ class ScreenFrame extends StatelessWidget {
                     borderRadius: BorderRadius.circular(Brand.pillRadius),
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                        horizontal: a.s(16),
-                        vertical: a.s(8),
+                        horizontal: a.s(12),
+                        vertical: a.s(7),
                       ),
                       decoration: BoxDecoration(
                         color: Brand.surface,
@@ -156,17 +157,17 @@ class ScreenFrame extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.language_rounded,
-                            size: a.s(18),
+                            size: a.s(16),
                             color: Brand.primary,
                           ),
                           SizedBox(width: a.s(6)),
                           Text(
                             s.otherLanguageName,
                             style: TextStyle(
-                              fontSize: a.s(15),
+                              fontSize: a.s(14),
                               fontWeight: FontWeight.w700,
                               color: Brand.primary,
-                              letterSpacing: 0.3,
+                              letterSpacing: 0.2,
                             ),
                           ),
                         ],
@@ -181,11 +182,12 @@ class ScreenFrame extends StatelessWidget {
               // Title Section
               Text(
                 title,
+                softWrap: true,
                 style: TextStyle(
                   fontSize: a.s(32),
                   fontWeight: FontWeight.w800,
                   color: Brand.primary,
-                  height: 1.2,
+                  height: s.lineHeight(1.2),
                   letterSpacing: -0.5,
                 ),
               ),
@@ -193,10 +195,11 @@ class ScreenFrame extends StatelessWidget {
                 SizedBox(height: a.s(6)),
                 Text(
                   subtitle!,
+                  softWrap: true,
                   style: TextStyle(
                     fontSize: a.s(17),
                     color: Brand.mutedText,
-                    height: 1.3,
+                    height: s.lineHeight(1.3),
                   ),
                 ),
               ],

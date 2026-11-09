@@ -20,6 +20,8 @@ class KioskApp extends StatelessWidget {
   KioskApp({
     super.key,
     ProductRepository? repository,
+    this.initialLang = 'en',
+    this.flow,
     Duration? idleTimeout,
     Duration? standardWarnAfter,
     Duration? standardWarnFor,
@@ -44,6 +46,8 @@ class KioskApp extends StatelessWidget {
                 : const Duration(seconds: 15));
 
   final ProductRepository repository;
+  final String initialLang;
+  final KioskFlow? flow;
 
   /// Duration before showing the idle warning on standard screens.
   final Duration standardWarnAfter;
@@ -73,6 +77,8 @@ class KioskApp extends StatelessWidget {
       ),
       home: KioskHome(
         repository: repository,
+        initialLang: initialLang,
+        flow: flow,
         standardWarnAfter: standardWarnAfter,
         standardWarnFor: standardWarnFor,
         resultsWarnAfter: resultsWarnAfter,
@@ -86,6 +92,8 @@ class KioskHome extends StatefulWidget {
   const KioskHome({
     super.key,
     required this.repository,
+    this.initialLang = 'en',
+    this.flow,
     this.standardWarnAfter = const Duration(seconds: 45),
     this.standardWarnFor = const Duration(seconds: 15),
     this.resultsWarnAfter = const Duration(seconds: 75),
@@ -94,6 +102,8 @@ class KioskHome extends StatefulWidget {
   }) : _legacyIdleTimeout = idleTimeout;
 
   final ProductRepository repository;
+  final String initialLang;
+  final KioskFlow? flow;
   final Duration standardWarnAfter;
   final Duration standardWarnFor;
   final Duration resultsWarnAfter;
@@ -114,7 +124,8 @@ class KioskHome extends StatefulWidget {
 }
 
 class _KioskHomeState extends State<KioskHome> {
-  final KioskFlow _flow = KioskFlow();
+  late final KioskFlow _flow =
+      widget.flow ?? KioskFlow(initialLang: widget.initialLang);
   late final Future<List<Product>> _products = widget.repository.loadAll();
 
   Timer? _warnTimer;
@@ -134,7 +145,9 @@ class _KioskHomeState extends State<KioskHome> {
   void dispose() {
     _cancelAllTimers();
     _flow.removeListener(_onFlowChanged);
-    _flow.dispose();
+    if (widget.flow == null) {
+      _flow.dispose();
+    }
     super.dispose();
   }
 
@@ -230,9 +243,19 @@ class _KioskHomeState extends State<KioskHome> {
             listenable: _flow,
             builder: (context, _) {
               final s = Strings(_flow.lang);
-              return Stack(
-                fit: StackFit.expand,
-                children: [
+              final isSi = _flow.lang == 'si';
+              return Theme(
+                data: buildTheme(_flow.lang),
+                child: DefaultTextStyle.merge(
+                  style: isSi
+                      ? const TextStyle(
+                          fontFamily: Brand.sinhalaFontFamily,
+                          height: Brand.sinhalaLineHeight,
+                        )
+                      : const TextStyle(),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
                   FutureBuilder<List<Product>>(
                     future: _products,
                     builder: (context, snap) {
@@ -280,9 +303,11 @@ class _KioskHomeState extends State<KioskHome> {
                       onDismiss: _dismissWarningAndRestart,
                     ),
                 ],
-              );
-            },
-          ),
+              ),
+            ),
+          );
+        },
+      ),
         ),
       ),
     );
@@ -413,10 +438,12 @@ class _IdleWarningOverlay extends StatelessWidget {
                     Text(
                       s.t('idleWarningTitle'),
                       textAlign: TextAlign.center,
+                      softWrap: true,
                       style: TextStyle(
                         fontSize: a.s(25),
                         fontWeight: FontWeight.w800,
                         color: Brand.primary,
+                        height: s.lineHeight(1.2),
                         letterSpacing: -0.4,
                       ),
                     ),
@@ -428,11 +455,12 @@ class _IdleWarningOverlay extends StatelessWidget {
                       child: Text(
                         s.t('idleWarningBody', {'n': '$secondsRemaining'}),
                         textAlign: TextAlign.center,
+                        softWrap: true,
                         style: TextStyle(
                           fontSize: a.s(14),
                           fontWeight: FontWeight.w500,
                           color: Brand.mutedText,
-                          height: 1.4,
+                          height: s.lineHeight(1.4),
                         ),
                       ),
                     ),
@@ -465,13 +493,17 @@ class _IdleWarningOverlay extends StatelessWidget {
                                 color: Brand.onPrimary,
                               ),
                               SizedBox(width: a.s(10)),
-                              Text(
-                                s.t('idleWarningStay'),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: a.s(17),
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: 0.3,
+                              Flexible(
+                                child: Text(
+                                  s.t('idleWarningStay'),
+                                  textAlign: TextAlign.center,
+                                  softWrap: true,
+                                  style: TextStyle(
+                                    fontSize: a.s(17),
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 0.3,
+                                    height: s.lineHeight(),
+                                  ),
                                 ),
                               ),
                             ],
